@@ -18,7 +18,7 @@ public required Guid UserId { get; set; }  // Fk
 [ForeignKey("UserId")]
 public User? Buyer { get; set; }
 
-public ICollection<OrderItems> OrderItems { get; set; } = [];
+public ICollection<OrderItem> OrderItems { get; set; } = [];
 
 public required DateTime DateCreated { get; set; } = DateTime.UtcNow;
 public required DateTime? ShippingDate { get; set; } =DateTime.UtcNow.AddDays(7);

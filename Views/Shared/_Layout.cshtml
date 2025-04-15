@@ -75,7 +75,11 @@
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">Shop</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown04">
-                            <a class="dropdown-item" href="shop.html">All products</a>
+                            <a class="dropdown-item" asp-controller="product" asp-action="index" asp-route-category="all">All products</a>
+                            <a class="dropdown-item" asp-controller="product" asp-action="index" asp-route-category="men">Men</a>
+                            <a class="dropdown-item" asp-controller="product" asp-action="index" asp-route-category="women">Women</a>
+                            <a class="dropdown-item" asp-controller="product" asp-action="index" asp-route-category="kids">Kids</a>
+                            <a class="dropdown-item" asp-controller="product" asp-action="index" asp-route-category="accessories">Accessories</a>
                         </div>
                     </li>
                     <li class="nav-item"><a asp-controller="home" asp-action="about" class="nav-link">About Us</a></li>
@@ -83,7 +87,10 @@
                     <li class="nav-item"><a asp-controller="home" asp-action="contact" class="nav-link">Contact</a></li>
 
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-toggle="modal" data-target="#loginModal">
+                        @* <a href="#" class="nav-link" data-toggle="modal" data-target="#loginModal">
+                            <span class="icon-user"></span> Login
+                        </a> *@
+                        <a asp-controller="User" asp-action="Login" class="nav-link" >
                             <span class="icon-user"></span> Login
                         </a>
                     </li>
@@ -101,7 +108,7 @@
 
 
 
-    <!-- Login Modal -->
+    @* <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -127,7 +134,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
 
 

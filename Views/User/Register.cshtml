@@ -7,20 +7,20 @@
 
 
 
-<div class="w-50 mx-auto">
+<div class="container pt-5 w-50">
 
 
 
-    <h1 class="mb-5"> Register Page</h1>
+    <h3> Register Page</h3>
 
 
 
     <form method="post">
 
 
-         <div class="mb-3">
+        <div class="mb-3">
             <label for="Username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="Username" >
+            <input type="text" class="form-control" name="Username">
         </div>
 
         <div class="mb-3">
@@ -38,15 +38,18 @@
 
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" required>
-            <label class="form-check-label" for="check">Check me out</label>
+            <label class="form-check-label" for="exampleCheck1"> I declare that i agree User agreement and privacy
+                policy</label>
         </div>
 
+        <div class="form-text pb-3"> Already Have an account Kindly <a asp-controller="User" asp-action="Login"> Login</a>
+            here </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Register</button>
 
-       <p class="text-danger pt-3">  @ViewBag.errorMessage  </p>
+        <p class="text-danger pt-3"> @ViewBag.errorMessage </p>
 
-       <p class="text-success">  @ViewBag.successMessage  </p>
+        <p class="text-success"> @ViewBag.successMessage </p>
 
     </form>
 

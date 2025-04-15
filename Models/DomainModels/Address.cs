@@ -21,9 +21,9 @@ public class Address
     public required string Phone { get; set; }
     public required string Landmark { get; set; }
 
-    public required Guid BuyerId { get; set; }
+    public required Guid UserId { get; set; }
 
-    [ForeignKey("BuyerId")]
+    [ForeignKey("UserId")]
     public User? Buyer { get; set; }
 
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;

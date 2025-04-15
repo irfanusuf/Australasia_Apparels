@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Create Product";
+}
+
+<div class="container pt-2">
+    <h3> Create Product</h3>
+</div>
+
+<div class="container pt-2">
+
+    <form method="post">
+        <div class="mb-3 d-flex" style="gap: 10px;">
+            <input type="text" class="form-control" id="ProductName" name="Name"
+                placeholder="Enter Product Name">
+
+                 <input type="text" class="form-control" id="Brand" name="Brand"
+                placeholder="Enter Brand Name">
+        </div>
+
+        <div class="mb-3">
+            <textarea type="text" class="form-control" id="Description" name="Description"
+                placeholder="Enter Product Description"></textarea>
+        </div>
+
+        <div class="mb-3 d-flex" style="gap: 10px;">
+            <input type="number" class="form-control" name="Price" placeholder="Price">
+            <input type="number" class="form-control" name="Discount" placeholder="Discount %">
+            <input type="number" class="form-control" name="Stock" placeholder="Stock">
+        </div>
+
+        <div class="mb-3 d-flex" style="gap: 10px;">
+            <input type="text" class="form-control" name="Size"
+                placeholder="Enter product items Sizes here seperated by comma ">
+
+            <input type="text" class="form-control" name="Color"
+                placeholder="Enter product colors here seperated by comma ">
+
+        </div>
+
+
+
+        <div class="mb-3 d-flex" style="gap: 10px;">
+            @Html.DropDownList("Category", (SelectList)ViewBag.CategoryList, "Select Category", new { @class =
+            "form-control" })
+
+
+            <input type="text" class="form-control" name="SubCategory" placeholder="Sub Category">
+            <input type="text" class="form-control" name="ImageUrl" placeholder="Image  Url">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Product</button>
+
+        <p class="text-danger pt-3">@ViewBag.ErrorMessage</p>
+        
+    </form>
+
+
+</div>
