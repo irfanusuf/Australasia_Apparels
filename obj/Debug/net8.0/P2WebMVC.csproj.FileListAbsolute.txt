@@ -342,7 +342,6 @@
 /home/irfanusuf/coding/Australasia_Apparels/P2WebMVC/obj/Debug/net8.0/ref/P2WebMVC.dll
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/appsettings.Development.json
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/appsettings.json
-/home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/winkel-master/prepros-6.config
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC.staticwebassets.runtime.json
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC.deps.json

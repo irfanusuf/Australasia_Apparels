@@ -1,0 +1,57 @@
+name: Build and Deploy Australasian Apparels
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build project
+      run: dotnet build --configuration Release
+
+    - name: Publish project
+      run: dotnet publish ./P2WebMVC.csproj --configuration Release --output ./publish
+
+    - name: Ensure logs folder exists
+      run: mkdir -p ./publish/logs
+
+    - name: Create appsettings.Production.json
+      env:
+        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      run: |
+        jq -n \
+          --arg conn "$DB_CONNECTION_STRING" \
+          --arg jwt "$JWT_SECRET_KEY" \
+          '{
+            ConnectionStrings: {
+              main: $conn
+            },
+            Jwt: {
+              SecretKey: $jwt
+            }
+          }' > ./publish/appsettings.Production.json
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4  
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./publish/
+        server-dir: ${{ secrets.FTP_TARGET_DIR }}

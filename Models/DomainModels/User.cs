@@ -15,10 +15,13 @@ public class User
     public string?  ProfilePicUrl {get ;set;}
     public string? Phone {get; set ; }
 
-    public Address? Address { get; set; } 
 
+    public Address? Address { get; set; }
     public Cart? Cart { get; set; }
     public ICollection<Order> Orders { get; set; } = [];
+
+
+    
    
     public DateTime DateCreated { get; set; }  = DateTime.UtcNow;
     public DateTime? DateModified { get; set; } = DateTime.UtcNow;
