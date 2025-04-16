@@ -10,11 +10,11 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 mb-5 ftco-animate">
-                <a href="images/menu-2.jpg" class="image-popup"><img src="@Model.Product.ImageUrl" class="img-fluid"
+                <a href="images/menu-2.jpg" class="image-popup"><img src="@Model?.Product?.ImageUrl" class="img-fluid"
                         alt="Colorlib Template"></a>
             </div>
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
-                <h3>@Model.Product.Name</h3>
+                <h3>@Model?.Product?.Name</h3>
                 <div class="rating d-flex">
                     <p class="text-left mr-4">
                         <a href="#" class="mr-2"> No rating</a>
@@ -31,8 +31,8 @@
                         <a href="#" class="mr-2" style="color: #000;"> 2 <span style="color: #bbb;">Sold</span></a>
                     </p>
                 </div>
-                <p class="price"><span>$ @Model.Product.Price</span></p>
-                <p class="text-dark">@Model.Product.Description</p>
+                <p class="price"><span>$ @Model?.Product?.Price</span></p>
+                <p class="text-dark">@Model?.Product?.Description</p>
 
 
                 <div class="row mt-4">
@@ -69,10 +69,10 @@
                     </div>
                     <div class="w-100"></div>
                     <div class="col-md-12">
-                        <p style="color: #000;">@Model.Product.Stock piece available</p>
+                        <p style="color: #000;">@Model?.Product?.Stock piece available</p>
                     </div>
                 </div>
-                <p><a asp-controller="Product" asp-action="AddtoCart" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+                <p><a asp-controller="Product" asp-action="AddtoCart" asp-route-ProductId ="@Model?.Product?.ProductId"  class="btn btn-black py-3 px-5">Add to Cart</a></p>
             </div>
         </div>
     </div>
