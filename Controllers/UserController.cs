@@ -28,7 +28,6 @@ namespace P2WebMVC.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
@@ -76,18 +75,13 @@ namespace P2WebMVC.Controllers
 
         }
 
-
         [HttpGet]
-
         public ActionResult Login()
         {
             return View();
         }
 
-
-
         [HttpPost]
-
         public async Task<ActionResult> Login(LoginView user)
         {
 
@@ -167,27 +161,21 @@ namespace P2WebMVC.Controllers
         }
 
         [HttpGet]
-
         public async Task<ActionResult> Cart(){
-            // var token = Request.Cookies["AuthorizationToken"];
+            var token = Request.Cookies["AuthorizationToken"];
 
-            // if (string.IsNullOrEmpty(token))
-            // {
-            //     return RedirectToAction("login", "user");
-            // }
-            // var userId = tokenService.VerifyTokenAndGetId(token);
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("login", "user");
+            }
+            var userId = tokenService.VerifyTokenAndGetId(token);
 
-            // if (Guid.Empty == userId)
-            // {
-            //     return RedirectToAction("login", "user");
-            // }
+            if (Guid.Empty == userId)
+            {
+                return RedirectToAction("login", "user");
+            }
 
             // var user = await sqlDbContext.Users.Include(u => u.Cart).FirstOrDefaultAsync(u => u.UserId == userId);
-
-            // if (user == null)
-            // {
-            //     return NotFound();
-            // }
 
             return View();
         }

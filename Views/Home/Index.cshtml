@@ -1,4 +1,7 @@
-﻿@{
+﻿@using P2WebMVC.Types
+@model P2WebMVC.Models.ViewModels.ProductViewModel
+
+@{
 	ViewData["Title"] = "Home";
 }
 
@@ -17,6 +20,7 @@
 					<div class="one-forth d-flex js-fullheight align-items-center ftco-animate"
 						data-scrollax=" properties: { translateY: '70%' }">
 						<div class="text">
+							using P2WebMVC.Types;
 							<span class="subheading">Australasia Apparels</span>
 							<div class="horizontal">
 								<h3 class="vr" style="background-image: url(~/images/divider.jpg);">Celebrating 3 years
@@ -225,9 +229,12 @@
 			<div class="col-md-4 py-md-5 ftco-animate">
 				<div class="text py-3 py-md-5">
 					<h2 class="mb-4">New Women's Clothing Summer Collection 2025</h2>
-					<p class="text-dark">Step into the sunshine with our Summer 2025 Women's Collection—featuring breezy fabrics, bold prints, and effortlessly chic styles designed to keep you cool and confident all season long.</p>
+					<p class="text-dark">Step into the sunshine with our Summer 2025 Women's Collection—featuring breezy
+						fabrics, bold prints, and effortlessly chic styles designed to keep you cool and confident all
+						season long.</p>
 
-					<p><a href="#" class="btn btn-white px-4 py-3">Shop now</a></p>
+					<a asp-controller="Product" asp-action="Index" asp-route-category="women"
+						class="btn btn-white px-4 py-3">Shop now</a>
 				</div>
 			</div>
 		</div>
@@ -239,9 +246,12 @@
 			<div class="col-md-7 py-3 py-md-5 ftco-animate">
 				<div class="text text-2 py-md-5">
 					<h2 class="mb-4">New Men's Clothing Summer Collection 2025</h2>
-					<p class="text-dark">Gear up for the heat with our Men's Summer 2025 Collection—featuring lightweight fabrics, clean cuts, and versatile styles made for sun-soaked days and laid-back nights.</p>
+					<p class="text-dark">Gear up for the heat with our Men's Summer 2025 Collection—featuring
+						lightweight fabrics, clean cuts, and versatile styles made for sun-soaked days and laid-back
+						nights.</p>
 
-					<p><a href="#" class="btn btn-primary px-4 py-3">Shop now</a></p>
+					<a asp-controller="Product" asp-action="Index" asp-route-category="men"
+						class="btn btn-primary px-4 py-3">Shop now</a>
 				</div>
 			</div>
 		</div>
@@ -255,45 +265,53 @@
 		<div class="row justify-content-center mb-3 pb-3">
 			<div class="col-md-12 heading-section text-center ftco-animate">
 				<h2 class="mb-4"> Men Products</h2>
-				<p  class="text-dark">Explore premium styles and rugged essentials designed for the modern man who values both comfort and character.</p>
+				<p class="text-dark">Explore premium styles and rugged essentials designed for the modern man who values
+					both comfort and character.</p>
 
 			</div>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row">
-
-			<div class="col-sm col-md-6 col-lg-3 ftco-animate">
-				<div class="product">
-					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-8.jpg"
-							alt="Colorlib Template">
-						<div class="overlay"></div>
-					</a>
-					<div class="text py-3 px-3">
-						<h3><a href="#">Floral Jackquard Pullover</a></h3>
-						<div class="d-flex">
-							<div class="pricing">
-								<p class="price"><span>$120.00</span></p>
+			@foreach (var product in Model.Products.Where(p => p.Category == ProductCategory.Men).Take(4))
+			{
+				<div class="col-sm col-md-6 col-lg-3 ftco-animate">
+					<div class="product">
+						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
+							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
+							<div class="overlay"></div>
+						</a>
+						<div class="text py-3 px-3">
+							<h3><a asp-controller="Product" asp-action="Details"
+									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
+							<div class="d-flex">
+								<div class="pricing">
+									<p class="price"><span>$ @product.Price</span></p>
+								</div>
+								<div class="rating">
+									<p class="text-right">
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+									</p>
+								</div>
 							</div>
-							<div class="rating">
-								<p class="text-right">
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-								</p>
-							</div>
+							<p class="bottom-area d-flex px-3">
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+											class="ion-ios-add ml-1"></i></span></a>
+								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
+											class="ion-ios-cart ml-1"></i></span></a> *@
+							</p>
 						</div>
-						<p class="bottom-area d-flex px-3">
-							<a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-										class="ion-ios-add ml-1"></i></span></a>
-							<a href="#" class="buy-now text-center py-2">Buy now<span><i
-										class="ion-ios-cart ml-1"></i></span></a>
-						</p>
 					</div>
 				</div>
-			</div>
+			}
+
+
+
 		</div>
 	</div>
 </section>
@@ -304,7 +322,8 @@
 		<div class="row justify-content-center mb-3 pb-3">
 			<div class="col-md-12 heading-section text-center ftco-animate">
 				<h2 class="mb-4"> For Women </h2>
-				<p class="text-dark">Discover elegant styles and timeless designs crafted to celebrate every woman's unique beauty and confidence.</p>
+				<p class="text-dark">Discover elegant styles and timeless designs crafted to celebrate every woman's
+					unique beauty and confidence.</p>
 
 			</div>
 		</div>
@@ -312,38 +331,42 @@
 	<div class="container">
 		<div class="row">
 
-			
-			<div class="col-sm col-md-6 col-lg-3 ftco-animate">
-				<div class="product">
-					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-7.jpg"
-							alt="Colorlib Template">
-						<div class="overlay"></div>
-					</a>
-					<div class="text py-3 px-3">
-						<h3><a href="#">Floral Jackquard Pullover</a></h3>
-						<div class="d-flex">
-							<div class="pricing">
-								<p class="price"><span>$120.00</span></p>
+			@foreach (var product in Model.Products.Where(p => p.Category == ProductCategory.Women).Take(5).Skip(1))
+			{
+				<div class="col-sm col-md-6 col-lg-3 ftco-animate">
+					<div class="product">
+						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
+							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
+							<div class="overlay"></div>
+						</a>
+						<div class="text py-3 px-3">
+							<h3><a asp-controller="Product" asp-action="Details"
+									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
+							<div class="d-flex">
+								<div class="pricing">
+									<p class="price"><span>$ @product.Price</span></p>
+								</div>
+								<div class="rating">
+									<p class="text-right">
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+									</p>
+								</div>
 							</div>
-							<div class="rating">
-								<p class="text-right">
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-								</p>
-							</div>
+							<p class="bottom-area d-flex px-3">
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+											class="ion-ios-add ml-1"></i></span></a>
+								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
+											class="ion-ios-cart ml-1"></i></span></a> *@
+							</p>
 						</div>
-						<p class="bottom-area d-flex px-3">
-							<a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-										class="ion-ios-add ml-1"></i></span></a>
-							<a href="#" class="buy-now text-center py-2">Buy now<span><i
-										class="ion-ios-cart ml-1"></i></span></a>
-						</p>
 					</div>
 				</div>
-			</div> 
+			}
 		</div>
 	</div>
 </section>
@@ -355,7 +378,8 @@
 		<div class="row justify-content-center mb-3 pb-3">
 			<div class="col-md-12 heading-section text-center ftco-animate">
 				<h2 class="mb-4"> For Kids</h2>
-				<p class="text-dark">Bright, playful, and comfy—our kids' collection is made for endless adventures and happy little moments.</p>
+				<p class="text-dark">Bright, playful, and comfy—our kids' collection is made for endless adventures and
+					happy little moments.</p>
 
 			</div>
 		</div>
@@ -363,50 +387,56 @@
 	<div class="container">
 		<div class="row">
 
-			
-			<div class="col-sm col-md-6 col-lg-3 ftco-animate">
-				<div class="product">
-					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-7.jpg"
-							alt="Colorlib Template">
-						<div class="overlay"></div>
-					</a>
-					<div class="text py-3 px-3">
-						<h3><a href="#">Floral Jackquard Pullover</a></h3>
-						<div class="d-flex">
-							<div class="pricing">
-								<p class="price"><span>$120.00</span></p>
+			@foreach (var product in Model.Products.Where(p => p.Category == ProductCategory.Kids).Take(4))
+			{
+				<div class="col-sm col-md-6 col-lg-3 ftco-animate">
+					<div class="product">
+						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
+							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
+							<div class="overlay"></div>
+						</a>
+						<div class="text py-3 px-3">
+							<h3><a asp-controller="Product" asp-action="Details"
+									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
+							<div class="d-flex">
+								<div class="pricing">
+									<p class="price"><span>$ @product.Price</span></p>
+								</div>
+								<div class="rating">
+									<p class="text-right">
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+									</p>
+								</div>
 							</div>
-							<div class="rating">
-								<p class="text-right">
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-								</p>
-							</div>
+							<p class="bottom-area d-flex px-3">
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+											class="ion-ios-add ml-1"></i></span></a>
+								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
+											class="ion-ios-cart ml-1"></i></span></a> *@
+							</p>
 						</div>
-						<p class="bottom-area d-flex px-3">
-							<a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-										class="ion-ios-add ml-1"></i></span></a>
-							<a href="#" class="buy-now text-center py-2">Buy now<span><i
-										class="ion-ios-cart ml-1"></i></span></a>
-						</p>
 					</div>
 				</div>
-			</div> 
+			}
+
 		</div>
 	</div>
 </section>
 
 
-@* for Kids  *@
+@* for accesories  *@
 <section class="ftco-section bg-light pt-2 pb-2">
 	<div class="container">
 		<div class="row justify-content-center mb-3 pb-3">
 			<div class="col-md-12 heading-section text-center ftco-animate">
 				<h2 class="mb-4"> Accessories</h2>
-				<p class="text-dark">Complete your look with our curated collection of accessories—where every detail makes a statement.</p>
+				<p class="text-dark">Complete your look with our curated collection of accessories—where every detail
+					makes a statement.</p>
 
 			</div>
 		</div>
@@ -414,38 +444,43 @@
 	<div class="container">
 		<div class="row">
 
-			
-			<div class="col-sm col-md-6 col-lg-3 ftco-animate">
-				<div class="product">
-					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-7.jpg"
-							alt="Colorlib Template">
-						<div class="overlay"></div>
-					</a>
-					<div class="text py-3 px-3">
-						<h3><a href="#">Floral Jackquard Pullover</a></h3>
-						<div class="d-flex">
-							<div class="pricing">
-								<p class="price"><span>$120.00</span></p>
+
+			@foreach (var product in Model.Products.Where(p => p.Category == ProductCategory.Accessories).Take(4))
+			{
+				<div class="col-sm col-md-6 col-lg-3 ftco-animate">
+					<div class="product">
+						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
+							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
+							<div class="overlay"></div>
+						</a>
+						<div class="text py-3 px-3">
+							<h3><a asp-controller="Product" asp-action="Details"
+									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
+							<div class="d-flex">
+								<div class="pricing">
+									<p class="price"><span>$ @product.Price</span></p>
+								</div>
+								<div class="rating">
+									<p class="text-right">
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+										<a href="#"><span class="ion-ios-star-outline"></span></a>
+									</p>
+								</div>
 							</div>
-							<div class="rating">
-								<p class="text-right">
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-									<a href="#"><span class="ion-ios-star-outline"></span></a>
-								</p>
-							</div>
+							<p class="bottom-area d-flex px-3">
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+											class="ion-ios-add ml-1"></i></span></a>
+								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
+											class="ion-ios-cart ml-1"></i></span></a> *@
+							</p>
 						</div>
-						<p class="bottom-area d-flex px-3">
-							<a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-										class="ion-ios-add ml-1"></i></span></a>
-							<a href="#" class="buy-now text-center py-2">Buy now<span><i
-										class="ion-ios-cart ml-1"></i></span></a>
-						</p>
 					</div>
 				</div>
-			</div> 
+			}
 		</div>
 	</div>
 </section>

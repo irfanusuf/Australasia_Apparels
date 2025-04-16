@@ -8,7 +8,8 @@
 
 <div class="container pt-2">
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
+
         <div class="mb-3 d-flex" style="gap: 10px;">
             <input type="text" class="form-control" id="ProductName" name="Name"
                 placeholder="Enter Product Name">
@@ -29,8 +30,12 @@
         </div>
 
         <div class="mb-3 d-flex" style="gap: 10px;">
-            <input type="text" class="form-control" name="Size"
-                placeholder="Enter product items Sizes here seperated by comma ">
+
+
+             @Html.DropDownList("Size", (SelectList)ViewBag.SizeList, "Select Size", new { @class =
+            "form-control" }) 
+
+          
 
             <input type="text" class="form-control" name="Color"
                 placeholder="Enter product colors here seperated by comma ">
@@ -41,11 +46,12 @@
 
         <div class="mb-3 d-flex" style="gap: 10px;">
             @Html.DropDownList("Category", (SelectList)ViewBag.CategoryList, "Select Category", new { @class =
-            "form-control" })
+            "form-control" }) 
 
 
             <input type="text" class="form-control" name="SubCategory" placeholder="Sub Category">
-            <input type="text" class="form-control" name="ImageUrl" placeholder="Image  Url">
+            <input type="file" class="form-control" name="ImageFile" accept="image/*">
+
         </div>
 
         <button type="submit" class="btn btn-primary">Create Product</button>

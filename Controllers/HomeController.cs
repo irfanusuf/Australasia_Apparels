@@ -1,21 +1,47 @@
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using P2WebMVC.Data;
 using P2WebMVC.Models;
+using P2WebMVC.Models.DomainModels;
+using P2WebMVC.Models.ViewModels;
 
 namespace P2WebMVC.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly SqlDbContext dbContext;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, SqlDbContext dbContext)
     {
         _logger = logger;
+        this.dbContext = dbContext;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        try
+        {
+            // fetch products from the database
+            var products = await dbContext.Products.Where(p => p.IsActive).ToListAsync();
+
+            var viewModel = new ProductViewModel
+            {
+                Products = products
+            };
+
+            return View(viewModel);
+        }
+        catch (System.Exception ex)
+        {
+            // Log the exception
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+
+        }
+
     }
 
     public IActionResult Privacy()
@@ -26,7 +52,7 @@ public class HomeController : Controller
     {
         return View();
     }
-     public IActionResult About()
+    public IActionResult About()
     {
         return View();
     }

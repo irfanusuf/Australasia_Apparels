@@ -681,3 +681,5 @@
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/P2WebMVC.genruntimeconfig.cache
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/ref/P2WebMVC.dll
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.json
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/CloudinaryDotNet.dll
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/Newtonsoft.Json.dll

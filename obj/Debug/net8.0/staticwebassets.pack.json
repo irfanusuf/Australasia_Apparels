@@ -217,10 +217,6 @@
       "PackagePath": "staticwebassets/images/image_2.jpg"
     },
     {
-      "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/image_4.jpg",
-      "PackagePath": "staticwebassets/images/image_4.jpg"
-    },
-    {
       "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/person_1.jpg",
       "PackagePath": "staticwebassets/images/person_1.jpg"
     },
@@ -267,6 +263,10 @@
     {
       "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/product-8.jpg",
       "PackagePath": "staticwebassets/images/product-8.jpg"
+    },
+    {
+      "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/product-9.jpg",
+      "PackagePath": "staticwebassets/images/product-9.jpg"
     },
     {
       "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/js/aos.js",

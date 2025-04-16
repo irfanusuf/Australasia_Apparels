@@ -23,57 +23,61 @@
 
 <section class="ftco-section bg-light" style="padding-top: 50px;">
     <div class="container">
-            @* <h3 class="pb-3 text-center"> <span style="text-transform: capitalize;">@ViewBag.category </span>  Products </h3> *@
+        @* <h3 class="pb-3 text-center"> <span style="text-transform: capitalize;">@ViewBag.category </span>  Products </h3> *@
 
         <div class="row">
 
 
             <div class="col-md-8 col-lg-10 order-md-last">
 
-                @foreach(var product in Model.Products){
+
 
                 <div class="row">
 
-                    <div class="col-sm-6 col-md-6 col-lg-4 ftco-animate">
-                        <div class="product">
-                            <a href="#" class="img-prod"><img class="img-fluid" src="~/images/product-1.jpg"
-                                    alt="Colorlib Template">
-                                <span class="status">@product.Discount % off</span>
-                                <div class="overlay"></div>
-                            </a>
-                            <div class="text py-3 px-3">
-                                <h3><a href="#">@product.Name</a></h3>
-                                <div class="d-flex">
-                                    <div class="pricing">
-                                        <p class="price"><span class="mr-2 price-dc">$120.00</span><span
-                                                class="price-sale">$ @product.Price</span></p>
+                    @foreach (var product in Model.Products)
+                    {
+
+                        <div class="col-sm-6 col-md-6 col-lg-4 ftco-animate" >
+
+                            <div class="product" >
+                                <a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId" class="img-prod"><img class="img-fluid" src="@product.ImageUrl"
+                                        alt="Colorlib Template">
+                                    <span class="status">@product.Discount % off</span>
+                                    <div class="overlay"></div>
+                                </a>
+                                <div class="text py-3 px-3">
+                                    <h3><a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
+                                    <div class="d-flex">
+                                        <div class="pricing">
+                                            <p class="price"><span class="mr-2 price-dc">$ @product.Price</span><span
+                                                    class="price-sale">$ @product.Price</span></p>
+                                        </div>
+                                        <div class="rating">
+                                            <p class="text-right">
+                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="rating">
-                                        <p class="text-right">
-                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                            <a href="#"><span class="ion-ios-star-outline"></span></a>  
-                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                        </p>
-                                    </div>
+                                    <p class="bottom-area d-flex px-3">
+                                        <a asp-controller="product" asp-action="AddToCart" asp-route-ProductId = "@product.ProductId" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+                                                    class="ion-ios-add ml-1"></i></span></a>
+                                        @* <a href="#" class="buy-now text-center py-2">Buy now<span><i
+                                                    class="ion-ios-cart ml-1"></i></span></a> *@
+                                    </p>
                                 </div>
-                                <p class="bottom-area d-flex px-3">
-                                    <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-                                                class="ion-ios-add ml-1"></i></span></a>
-                                    <a href="#" class="buy-now text-center py-2">Buy now<span><i
-                                                class="ion-ios-cart ml-1"></i></span></a>
-                                </p>
                             </div>
                         </div>
-                    </div>
-
-                    
 
 
+
+                    }
 
                 </div>
-                }
+
 
 
                 <div class="row mt-5">

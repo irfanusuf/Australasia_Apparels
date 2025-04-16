@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YQ4/nayKmQTdnJIRv4uHqJYjhBAfzekg2IJMa69wPJ4=",
+  "Hash": "1V2ViSKW7QLuHPOWJKA0uru/jtY+w4ITxZ10AD5tiT4=",
   "Source": "P2WebMVC",
   "BasePath": "_content/P2WebMVC",
   "Mode": "Default",
@@ -1005,25 +1005,6 @@
       "OriginalItemSpec": "wwwroot/images/image_2.jpg"
     },
     {
-      "Identity": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/image_4.jpg",
-      "SourceId": "P2WebMVC",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/irfanusuf/Australasia_Apparels/wwwroot/",
-      "BasePath": "_content/P2WebMVC",
-      "RelativePath": "images/image_4.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/images/image_4.jpg"
-    },
-    {
       "Identity": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/Kids.jpg",
       "SourceId": "P2WebMVC",
       "SourceType": "Discovered",
@@ -1288,6 +1269,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/product-8.jpg"
+    },
+    {
+      "Identity": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/product-9.jpg",
+      "SourceId": "P2WebMVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/irfanusuf/Australasia_Apparels/wwwroot/",
+      "BasePath": "_content/P2WebMVC",
+      "RelativePath": "images/product-9.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/product-9.jpg"
     },
     {
       "Identity": "/home/irfanusuf/Australasia_Apparels/wwwroot/images/Women.jpg",

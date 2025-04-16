@@ -1,30 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
+using P2WebMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-
-
 // dependency injection
 builder.Services.AddSingleton<ITokenService , TokenService>();
+builder.Services.AddSingleton<IMailService , EmailService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 // service injection 
 builder.Services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("main")));
 
-
-
-
-
 var app = builder.Build();
-
-
-
-
-// Configure the HTTP request pipeline.
 
 
 if (app.Environment.IsProduction())
@@ -33,10 +24,10 @@ if (app.Environment.IsProduction())
     app.UseHsts();
 }
 
-
 app.UseExceptionHandler("/Error");
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();   // use static files present in wwwwroot 
 
 app.UseRouting();
