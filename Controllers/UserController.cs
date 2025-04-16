@@ -12,12 +12,12 @@ namespace P2WebMVC.Controllers
     public class UserController : Controller
     {
 
-        private readonly SqlDbContext sqlDbContext;    // encapsulated feilds
+        private readonly SqlDbContext dbContext;    // encapsulated feilds
         private readonly ITokenService tokenService;
 
-        public UserController(SqlDbContext sqlDbContext, ITokenService tokenService)
+        public UserController(SqlDbContext dbContext, ITokenService tokenService)
         {
-            this.sqlDbContext = sqlDbContext;
+            this.dbContext = dbContext;
             this.tokenService = tokenService;
         }
 
@@ -40,9 +40,9 @@ namespace P2WebMVC.Controllers
                 }
                 //   var existingUser = await sqlDbContext.Users.FindAsync(user.UserId);   // findAsync is for PK
 
-                var existingUser = await sqlDbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);   // findAsync is for PK
+                var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);   // findAsync is for PK
 
-            
+
 
                 if (existingUser != null)
                 {
@@ -58,8 +58,8 @@ namespace P2WebMVC.Controllers
 
 
 
-                var newUser = await sqlDbContext.Users.AddAsync(user);
-                await sqlDbContext.SaveChangesAsync();
+                var newUser = await dbContext.Users.AddAsync(user);
+                await dbContext.SaveChangesAsync();
 
 
                 // ViewBag.successMessage = "User Created Succefully!";
@@ -94,7 +94,7 @@ namespace P2WebMVC.Controllers
                     return View();
                 }
 
-                var existingUser = await sqlDbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+                var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
 
                 if (existingUser == null)
@@ -123,13 +123,16 @@ namespace P2WebMVC.Controllers
                     });
 
 
-                    if(existingUser.Role == Role.User){
+                    if (existingUser.Role == Role.User)
+                    {
                         return RedirectToAction("Index", "Home");
                     }
-                    else if(existingUser.Role == Role.StoreKeeper){
+                    else if (existingUser.Role == Role.StoreKeeper)
+                    {
                         return RedirectToAction("Index", "StoreKeeper");
                     }
-                    else if(existingUser.Role == Role.Admin){
+                    else if (existingUser.Role == Role.Admin)
+                    {
                         return RedirectToAction("Index", "Admin");
                     }
                     else
@@ -161,23 +164,54 @@ namespace P2WebMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Cart(){
-            var token = Request.Cookies["AuthorizationToken"];
-
-            if (string.IsNullOrEmpty(token))
+        public async Task<ActionResult> Cart()
+        {
+            try
             {
-                return RedirectToAction("login", "user");
-            }
-            var userId = tokenService.VerifyTokenAndGetId(token);
+                var token = Request.Cookies["AuthorizationToken"];
 
-            if (Guid.Empty == userId)
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("Login", "User");
+                }
+                var userId = tokenService.VerifyTokenAndGetId(token);
+
+                if (Guid.Empty == userId)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId== userId); // finding cart of user 
+
+                if (cart == null || cart.CartItems.Count == 0)
+                {
+                    ViewBag.cartEmpty = "Cart is Empty";
+                    return View();
+                }
+
+                // for efficency there is serperated cart profucts db query
+                var cartItems = await dbContext.CartItems
+                .Include(ci => ci.Product)
+                .Where(ci => ci.CartId == cart.CartId)
+                .ToListAsync();
+
+
+                var viewModel = new CartViewModel
+                {
+                    CartItems = cartItems,
+                    Cart = cart
+                };
+
+                return View(viewModel);
+            }
+            catch (System.Exception ex)
             {
-                return RedirectToAction("login", "user");
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+
+                throw;
             }
 
-            // var user = await sqlDbContext.Users.Include(u => u.Cart).FirstOrDefaultAsync(u => u.UserId == userId);
-
-            return View();
         }
 
         [HttpGet]
@@ -190,6 +224,7 @@ namespace P2WebMVC.Controllers
 
 
     }
+
 }
 
 

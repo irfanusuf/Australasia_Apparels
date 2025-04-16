@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models.DomainModels;
+using P2WebMVC.Models.JunctionModels;
 using P2WebMVC.Models.ViewModels;
 using P2WebMVC.Types;
 
@@ -98,9 +99,78 @@ namespace P2WebMVC.Controllers
    
         [HttpGet]
 
-        public ActionResult AddToCart(Guid ProductId)
+     
+         public async Task<ActionResult> AddToCart(Guid ProductId)
         {
-            return RedirectToAction("Cart" , "");
+            try
+            {
+                var token = Request.Cookies["AuthorizationToken"];
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("login", "user");
+                }
+                var userId = tokenService.VerifyTokenAndGetId(token);
+                if (Guid.Empty == userId)
+                {
+                    return RedirectToAction("login", "user");
+                }
+                var product = await dbContext.Products.FindAsync(ProductId);
+
+             
+
+                var cart = await dbContext.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);    // cart ko find kerhay hai 
+
+                if (cart == null)
+                {
+                    cart = new Cart
+                    {
+                        UserId = (Guid)userId,
+                        CartValue = 0
+                    };
+                    await dbContext.Carts.AddAsync(cart);
+                    await dbContext.SaveChangesAsync();
+                }
+
+                var existingCartItem = await dbContext
+                .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);   // finding cartProduct 
+
+                if (existingCartItem == null)
+                {
+                    var cartItem = new CartItem
+                    {
+                        CartId = cart.CartId,
+                        ProductId = ProductId,
+                        Quantity = 1
+                    };
+
+                    await dbContext.CartItems.AddAsync(cartItem);    
+                    if (product != null)
+                    {
+                        cart.CartValue += (int)product.Price;
+                    }
+                    await dbContext.SaveChangesAsync();
+                }
+
+                if (existingCartItem != null && existingCartItem.ProductId == ProductId)
+                {
+                    existingCartItem.Quantity += 1;
+                      if (product != null)
+                    {
+                        cart.CartValue += (int)product.Price;
+                    }
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return RedirectToAction("Cart", "User");
+            }
+            catch (Exception ex)
+            {
+                
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
         }
    
     }

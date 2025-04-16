@@ -1,4 +1,5 @@
-﻿@{
+﻿@model P2WebMVC.Models.ViewModels.CartViewModel
+@{
     ViewData["Title"] = "Cart";
 }
 
@@ -22,31 +23,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="text-center">
-                                <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
 
-                                <td class="image-prod">
-                                    <div class="img" style="background-image: url('@Url.Content("~/images/product-6.jpg")');"></div>
-                                </td>
-                                    
-                                <td class="product-name">
-                                    <h3>ProductName </h3>
-                                    <p>ProductDescription</p>
-                                </td>
 
-                                <td class="price">$4.90</td>
+                            @foreach (var cartItem in Model.CartItems)
+                            {
 
-                                <td class="quantity">
-                                    <div class="input-group mb-3">
-                                        <input type="number" name="quantity" class="quantity form-control input-number"
-                                            value="1" min="1" max="100">
-                                    </div>
-                                </td>
 
-                                <td class="total">$4.90</td>
-                            </tr><!-- END TR-->
+                                <tr class="text-center">
+                                    <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
 
-                        
+                                    <td class="image-prod">
+                                        <img src="@cartItem?.Product?.ImageUrl" width="120" />
+                                    </td>
+
+                                    <td class="product-name">
+                                        <h3>@cartItem?.Product?.Name</h3>
+                                        @* <p>@cartItem?.Product.</p> *@
+                                    </td>
+
+                                    <td class="price">$ @cartItem?.Product?.Price</td>
+
+                                    <td class="quantity">
+                                        <div class="input-group mb-3">
+                                            <input type="number" name="quantity" class="quantity form-control input-number"
+                                                value="@cartItem?.Quantity" min="1" max="100">
+                                        </div>
+                                    </td>
+
+                                    <td class="total">$ @(cartItem?.Product?.Price * cartItem?.Quantity)</td>
+                                </tr>
+                            
+                                <!-- END TR-->
+
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -60,23 +69,23 @@
                     <h3>Cart Totals</h3>
                     <p class="d-flex">
                         <span>Subtotal</span>
-                        <span>$20.60</span>
+                        <span>$ @Model?.Cart?.CartValue.00</span>
                     </p>
                     <p class="d-flex">
                         <span>Delivery</span>
-                        <span>$0.00</span>
+                        <span>$ 19.99</span>
                     </p>
                     <p class="d-flex">
                         <span>Discount</span>
-                        <span>$3.00</span>
+                        <span>$ 10.00</span>
                     </p>
                     <hr>
                     <p class="d-flex total-price">
                         <span>Total</span>
-                        <span>$17.60</span>
+                        <span>$ @(Model?.Cart?.CartValue + 9.99)</span>
                     </p>
                 </div>
-                <p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a>
+                <p class="text-center"><a href="#" class="btn btn-primary py-3 px-4">Proceed to Checkout</a>
                 </p>
             </div>
         </div>
