@@ -100,7 +100,7 @@ namespace P2WebMVC.Controllers
 
         public ActionResult AddToCart(Guid ProductId)
         {
-            return RedirectToAction("Cart" , "User");
+            return RedirectToAction("Cart" , "");
         }
    
     }
