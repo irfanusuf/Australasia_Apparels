@@ -5,6 +5,7 @@ using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models;
 using P2WebMVC.Models.ViewModels;
+using P2WebMVC.Types;
 
 namespace P2WebMVC.Controllers
 {
@@ -26,7 +27,6 @@ namespace P2WebMVC.Controllers
         {
             return View();
         }
-
 
 
         [HttpPost]
@@ -77,8 +77,6 @@ namespace P2WebMVC.Controllers
         }
 
 
-
-
         [HttpGet]
 
         public ActionResult Login()
@@ -122,18 +120,29 @@ namespace P2WebMVC.Controllers
 
                     //    Console.WriteLine(token);
 
-                    HttpContext.Response.Cookies.Append("GradSchoolAuthorizationToken", token, new CookieOptions
+                    HttpContext.Response.Cookies.Append("AuthorizationToken", token, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = false,
                         SameSite = SameSiteMode.Lax,
-                        Expires = DateTimeOffset.UtcNow.AddHours(24)
+                        Expires = DateTimeOffset.UtcNow.AddHours(72)
                     });
 
-                    // token ko cookies may save kerna .... // done 9 april 
 
-                    return RedirectToAction("Dashboard", "Admin");
-
+                    if(existingUser.Role == Role.User){
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if(existingUser.Role == Role.StoreKeeper){
+                        return RedirectToAction("Index", "StoreKeeper");
+                    }
+                    else if(existingUser.Role == Role.Admin){
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    else
+                    {
+                        ViewBag.errorMessage = "Something Went Wrong Kindly Try Again after Sometime!";
+                        return View("Error");
+                    }
                 }
                 else
                 {
@@ -156,6 +165,40 @@ namespace P2WebMVC.Controllers
 
 
         }
+
+        [HttpGet]
+
+        public async Task<ActionResult> Cart(){
+            // var token = Request.Cookies["AuthorizationToken"];
+
+            // if (string.IsNullOrEmpty(token))
+            // {
+            //     return RedirectToAction("login", "user");
+            // }
+            // var userId = tokenService.VerifyTokenAndGetId(token);
+
+            // if (Guid.Empty == userId)
+            // {
+            //     return RedirectToAction("login", "user");
+            // }
+
+            // var user = await sqlDbContext.Users.Include(u => u.Cart).FirstOrDefaultAsync(u => u.UserId == userId);
+
+            // if (user == null)
+            // {
+            //     return NotFound();
+            // }
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            HttpContext.Response.Cookies.Delete("AuthorizationToken");
+            return RedirectToAction("Index", "Home");
+        }
+
 
 
     }

@@ -523,8 +523,6 @@
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/P2WebMVC.dll
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/refint/P2WebMVC.dll
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/P2WebMVC.pdb
-/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.Development.json
-/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.json
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC.staticwebassets.runtime.json
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/P2WebMVC.deps.json
@@ -682,3 +680,4 @@
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/P2WebMVC.csproj.CopyComplete
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/P2WebMVC.genruntimeconfig.cache
 /home/irfanusuf/Australasia_Apparels/obj/Debug/net8.0/ref/P2WebMVC.dll
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.json

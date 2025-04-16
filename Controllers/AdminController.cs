@@ -23,7 +23,7 @@ namespace P2WebMVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var token = Request.Cookies["GradSchoolAuthorizationToken"];
+            var token = Request.Cookies["AuthorizationToken"];
 
             if (string.IsNullOrEmpty(token))
             {

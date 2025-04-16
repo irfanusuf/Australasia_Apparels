@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using P2WebMVC.Models.DomainModels;
+using P2WebMVC.Types;
 
 namespace P2WebMVC.Models;
 
@@ -14,8 +16,7 @@ public class User
     public required string  Password {get ;set;}
     public string?  ProfilePicUrl {get ;set;}
     public string? Phone {get; set ; }
-
-
+    public Role Role {get;set;} = Role.User;
     public Address? Address { get; set; }
     public Cart? Cart { get; set; }
     public ICollection<Order> Orders { get; set; } = [];
