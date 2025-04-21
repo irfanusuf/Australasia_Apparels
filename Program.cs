@@ -32,7 +32,7 @@ app.UseStaticFiles();   // use static files present in wwwwroot
 
 app.UseRouting();
 
-app.UseAuthentication(); // before UseAuthorization
+// app.UseAuthentication(); // before UseAuthorization
 
 app.UseAuthorization();
 
