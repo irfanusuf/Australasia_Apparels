@@ -46,7 +46,7 @@
                 <p class="price"><span>$ @Model?.Product?.Price</span></p>
                 <p class="text-dark">@Model?.Product?.Description</p>
 
-                <form>
+                <form asp-controller="Product" asp-action="AddToCart" asp-route-ProductId = "@Model?.Product?.ProductId">
                 <div class="row mt-4">
 
                   
@@ -56,6 +56,32 @@
                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
 
                                 @Html.DropDownList("Size", (SelectList)ViewBag.SizeList, "Select Size", new { @class = "form-control" }) 
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group d-flex">
+                            <div class="select-wrap">
+                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+
+                            @{
+                                var colorString = Model?.Product?.Color ?? "";
+                                var colorList = colorString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                           .Select(c => c.Trim())
+                                                           .Where(c => !string.IsNullOrWhiteSpace(c))
+                                                           .ToList();
+                            }
+                            <select name="Color" class="form-control">
+                                <option value="">Select Color</option>
+                                @foreach (var color in colorList)
+                                {
+                                    <option value="@color">@color</option>
+                                }
+                            </select>
                                
                                 
                             </div>
@@ -119,7 +145,7 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-black py-3 px-5">Add to Cart</button>
+                <p class="btn btn-black py-3 px-5" style="cursor:pointer;" onclick="this.closest('form').submit();">Add to Cart</p>
 
                 
 

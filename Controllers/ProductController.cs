@@ -96,18 +96,32 @@ namespace P2WebMVC.Controllers
         }
 
 
+        
         [Authorize]
-        [HttpGet]
-        public async Task<ActionResult> AddToCart(Guid ProductId)
+        [HttpPost]
+        public async Task<ActionResult> AddToCart(Guid ProductId, int quantity, ProductSize size, string color)
         {
             try
             {
                 Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                if (userId == null)
+                {
+                    ViewBag.ErrorMessage = "User not logged in.";
+                    return View("Error");
+                }
+
                 var product = await dbContext.Products.FindAsync(ProductId);
+                if (product == null)
+                {
+                    ViewBag.ErrorMessage = "Product not found.";
+                    return View("Error");
+                }
+
+                decimal discountedPrice = product.Price - (product.Price * product.Discount / 100);
 
                 var cart = await dbContext.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId);    // cart ko find kerhay hai 
+                    .Include(c => c.CartItems)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
 
                 if (cart == null)
                 {
@@ -121,7 +135,7 @@ namespace P2WebMVC.Controllers
                 }
 
                 var existingCartItem = await dbContext
-                .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);   // finding cartProduct 
+                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);
 
                 if (existingCartItem == null)
                 {
@@ -129,32 +143,25 @@ namespace P2WebMVC.Controllers
                     {
                         CartId = cart.CartId,
                         ProductId = ProductId,
-                        Quantity = 1
+                        Quantity = quantity,
+                        Size = size,
+                        Color = color
                     };
 
                     await dbContext.CartItems.AddAsync(cartItem);
-                    if (product != null)
-                    {
-                        cart.CartValue += product.Price - (product.Price * product.Discount / 100);
-                    }
-                    await dbContext.SaveChangesAsync();
                 }
-
-                if (existingCartItem != null && existingCartItem.ProductId == ProductId)
+                else
                 {
-                    existingCartItem.Quantity += 1;
-                    if (product != null)
-                    {
-                      cart.CartValue += product.Price - (product.Price * product.Discount / 100);
-                    }
-                    await dbContext.SaveChangesAsync();
+                    existingCartItem.Quantity += quantity;
                 }
 
+                cart.CartValue += discountedPrice * quantity;
+
+                await dbContext.SaveChangesAsync();
                 return RedirectToAction("Cart", "User");
             }
             catch (Exception ex)
             {
-
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }

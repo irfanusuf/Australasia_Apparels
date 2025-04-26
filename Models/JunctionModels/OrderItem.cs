@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using P2WebMVC.Models.DomainModels;
+using P2WebMVC.Types;
 
 namespace P2WebMVC.Models.JunctionModels;
 
@@ -21,7 +22,7 @@ public class OrderItem
 
 
     public required int Quantity { get; set; } 
-    
-    
+    public ProductSize? Size {get;set;}
+    public string? Color  {get;set;}
 
 }
