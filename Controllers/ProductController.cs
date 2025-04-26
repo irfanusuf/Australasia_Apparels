@@ -135,9 +135,9 @@ namespace P2WebMVC.Controllers
                 }
 
                 var existingCartItem = await dbContext
-                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);
+                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId );
 
-                if (existingCartItem == null)
+                if (existingCartItem == null )
                 {
                     var cartItem = new CartItem
                     {

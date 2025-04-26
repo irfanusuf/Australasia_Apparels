@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using P2WebMVC.Models.DomainModels;
 using P2WebMVC.Types;
@@ -8,6 +9,10 @@ namespace P2WebMVC.Models.JunctionModels;
 public class OrderItem
 {
 
+    [Key]
+
+    public Guid OrderItemId {get;set;} =Guid.NewGuid();
+    
 
     public  Guid OrderId { get; set; }  // FK to Order
     [ForeignKey("OrderId")] // Foreign key to Order

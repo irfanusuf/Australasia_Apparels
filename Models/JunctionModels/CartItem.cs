@@ -8,7 +8,10 @@ namespace P2WebMVC.Models.JunctionModels;
 
 public class CartItem
 {
-[Key]
+    [Key]
+
+    public Guid CartItemId {get;set;} = Guid.NewGuid();
+
     public Guid CartId { get; set; } // FK
     [ForeignKey("CartId")]  
     public Cart? Cart { get; set; } // Navigation property
