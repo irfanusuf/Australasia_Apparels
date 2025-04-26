@@ -70,17 +70,15 @@ namespace P2WebMVC.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<ActionResult> Details(Guid ProductId)
         {
             try
             {
 
-               
-
                 var product = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == ProductId && p.IsActive);
 
-        
                 var viewModel = new ProductViewModel
                 {
                     Product = product,
@@ -96,27 +94,16 @@ namespace P2WebMVC.Controllers
                 throw;
             }
         }
-   
-        [HttpGet]
 
-     
-         public async Task<ActionResult> AddToCart(Guid ProductId)
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> AddToCart(Guid ProductId)
         {
             try
             {
-                var token = Request.Cookies["AuthorizationToken"];
-                if (string.IsNullOrEmpty(token))
-                {
-                    return RedirectToAction("login", "user");
-                }
-                var userId = tokenService.VerifyTokenAndGetId(token);
-                if (Guid.Empty == userId)
-                {
-                    return RedirectToAction("login", "user");
-                }
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
                 var product = await dbContext.Products.FindAsync(ProductId);
-
-             
 
                 var cart = await dbContext.Carts
                 .Include(c => c.CartItems)
@@ -145,10 +132,10 @@ namespace P2WebMVC.Controllers
                         Quantity = 1
                     };
 
-                    await dbContext.CartItems.AddAsync(cartItem);    
+                    await dbContext.CartItems.AddAsync(cartItem);
                     if (product != null)
                     {
-                        cart.CartValue += (int)product.Price;
+                        cart.CartValue += product.Price - (product.Price * product.Discount / 100);
                     }
                     await dbContext.SaveChangesAsync();
                 }
@@ -156,9 +143,9 @@ namespace P2WebMVC.Controllers
                 if (existingCartItem != null && existingCartItem.ProductId == ProductId)
                 {
                     existingCartItem.Quantity += 1;
-                      if (product != null)
+                    if (product != null)
                     {
-                        cart.CartValue += (int)product.Price;
+                      cart.CartValue += product.Price - (product.Price * product.Discount / 100);
                     }
                     await dbContext.SaveChangesAsync();
                 }
@@ -167,11 +154,11 @@ namespace P2WebMVC.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }
         }
-   
+
     }
 }

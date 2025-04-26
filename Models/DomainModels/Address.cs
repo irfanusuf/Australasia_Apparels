@@ -21,7 +21,7 @@ public class Address
     public required string Phone { get; set; }
     public required string Landmark { get; set; }
 
-    public required Guid UserId { get; set; }    //  fk 
+    public Guid  UserId { get; set; }    //  fk 
 
     [ForeignKey("UserId")]
     public User? Buyer { get; set; }

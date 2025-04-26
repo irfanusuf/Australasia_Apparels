@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models.DomainModels;
+using P2WebMVC.Models.ViewModels;
 using P2WebMVC.Types;
 
 namespace P2WebMVC.Controllers
@@ -25,7 +27,7 @@ namespace P2WebMVC.Controllers
 
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var token = Request.Cookies["AuthorizationToken"];
 
@@ -39,6 +41,16 @@ namespace P2WebMVC.Controllers
             {
                 return RedirectToAction("login", "user");
             }
+
+            var usersCount = await dbContext.Users.CountAsync();
+            var ordersCount = await dbContext.Orders.CountAsync();
+            var productsCount = await dbContext.Products.CountAsync();
+
+            ViewBag.TotalUsers = usersCount;
+            ViewBag.TotalOrders = ordersCount;
+            ViewBag.TotalProducts = productsCount;
+
+
             return View();
         }
 
@@ -46,7 +58,7 @@ namespace P2WebMVC.Controllers
         public ActionResult CreateProduct()
         {
             ViewBag.CategoryList = new SelectList(Enum.GetValues(typeof(ProductCategory)));
-             ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
+            ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
             return View();
         }
 
@@ -99,5 +111,77 @@ namespace P2WebMVC.Controllers
             }
 
         }
+
+        [HttpGet]
+        public async Task<ActionResult> ProductList()
+        {
+            try
+            {
+                var products = await dbContext.Products.ToListAsync();
+
+                var viewModel = new ProductViewModel
+                {
+                    Products = products
+                };
+                return View(viewModel);
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> OrderList()
+        {
+
+            try
+            {
+                var orders = await dbContext.Orders.ToListAsync();
+
+                var viewModel = new OrderViewModel
+                {
+                    Orders = orders
+                };
+                return View(viewModel);
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> UserDb()
+        {
+
+            try
+            { 
+                var users = await dbContext.Users.ToListAsync();
+
+                var viewModel = new UserViewModel
+                {
+                    Users = users
+                };
+                return View(viewModel);
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+
+            }
+
+        }
+
+
     }
 }
+
+

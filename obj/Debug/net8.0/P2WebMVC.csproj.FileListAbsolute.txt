@@ -683,3 +683,7 @@
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.json
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/CloudinaryDotNet.dll
 /home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/CloudinaryDotNet.dll
+/home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/BouncyCastle.Crypto.dll
+/home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/Razorpay.dll

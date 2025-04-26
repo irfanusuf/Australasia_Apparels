@@ -16,26 +16,40 @@
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
                 <h3>@Model?.Product?.Name</h3>
                 <div class="rating d-flex">
+
+
                     <p class="text-left mr-4">
-                        <a href="#" class="mr-2"> No rating</a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        @{
+                            var rating = (int)(Model?.Product?.Rating ?? 0);
+                            for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= rating)
+                                {
+                                    <a href="#"><span class="ion-ios-star"></span></a>
+                                }
+                                else
+                                {
+                                    <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                }
+                            }
+                        }
                     </p>
+
+
                     <p class="text-left mr-4">
-                        <a href="#" class="mr-2" style="color: #000;">0 <span style="color: #bbb;">Rating</span></a>
+                        <a  href="#" class="mr-2" style="color: #000;">@(Model?.Product?.Rating ?? 0 ) <span style="color: #bbb;"> Rating</span></a>
                     </p>
                     <p class="text-left">
-                        <a href="#" class="mr-2" style="color: #000;"> 2 <span style="color: #bbb;">Sold</span></a>
+                        <a href="#" class="mr-2" style="color: #000;">@(Model?.Product?.Sold  ?? 0 )<span style="color: #bbb;"> Sold</span></a>
                     </p>
                 </div>
                 <p class="price"><span>$ @Model?.Product?.Price</span></p>
                 <p class="text-dark">@Model?.Product?.Description</p>
 
-
+                <form>
                 <div class="row mt-4">
+
+                  
                     <div class="col-md-6">
                         <div class="form-group d-flex">
                             <div class="select-wrap">
@@ -47,32 +61,72 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-100"></div>
+
+                    @* <div class="w-100"></div> *@
                     <div class="input-group col-md-6 d-flex mb-3">
 
 
-                        @* <span class="input-group-btn mr-2">
-                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+                        <span class="input-group-btn mr-2">
+                            <button type="button" class="quantity-left-minus btn">
                                 <i class="ion-ios-remove"></i>
                             </button>
-                        </span> *@
+                        </span>
 
-                        <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1"
-                            min="1" max="100">
+                        <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="10" readonly>
 
-
-                        @* <span class="input-group-btn ml-2">
-                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+                        <span class="input-group-btn ml-2">
+                            <button type="button" class="quantity-right-plus btn" >
                                 <i class="ion-ios-add"></i>
                             </button>
-                        </span> *@
+                        </span>
+
+                        @section Scripts {
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var quantityInput = document.getElementById('quantity');
+                                    var minusBtn = document.querySelector('.quantity-left-minus');
+                                    var plusBtn = document.querySelector('.quantity-right-plus');
+
+                                    minusBtn.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        var current = parseInt(quantityInput.value) || 1;
+                                        var min = parseInt(quantityInput.min) || 1;
+                                        if (current > min) {
+                                            quantityInput.value = current - 1;
+                                        }
+                                    });
+
+                                    plusBtn.addEventListener('click', function (e) {
+                                        e.preventDefault();
+                                        var current = parseInt(quantityInput.value) || 1;
+                                        var max = parseInt(quantityInput.max) || 10;
+                                        if (current < max) {
+                                            quantityInput.value = current + 1;
+                                        }
+                                    });
+                                });
+                            </script>
+                        }
                     </div>
-                    <div class="w-100"></div>
+
+
+                    @* <div class="w-100"></div> *@
                     <div class="col-md-12">
-                        <p style="color: #000;">@Model?.Product?.Stock piece available</p>
+                        <p style="color: #000;">@Model?.Product?.Stock pieces available</p>
                     </div>
+
+                  
                 </div>
-                <p><a asp-controller="Product" asp-action="AddtoCart" asp-route-ProductId ="@Model?.Product?.ProductId"  class="btn btn-black py-3 px-5">Add to Cart</a></p>
+
+
+                <button type="submit" class="btn btn-black py-3 px-5">Add to Cart</button>
+
+                
+
+                </form> 
+
+
+               
             </div>
         </div>
     </div>
