@@ -24,22 +24,31 @@ namespace P2WebMVC.Controllers
 
         }
 
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> CheckOut(Guid CartId)
         {
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            try
+            {
+             Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
             var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.CartId == CartId); // finding cart of user 
 
-            if (cart == null)
+            if (cart == null ||  cart.CartValue == 0)
             {
-                ViewBag.cartEmpty = "Cart is Empty";
-                return View();     // have to watch it in future if there are no items in cart .. 
+                return RedirectToAction("Cart" , "User");     // have to watch it in future if there are no items in cart .. 
             }
+
+
+            // Console.WriteLine("cart caout" + cart.CartId);
+            // Console.WriteLine("this is userId" + userId);
 
             var address = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
 
-            var cartItems = await dbContext.CartItems
+
+            var cartItems = await dbContext.CartItems 
             .Include(cp => cp.Product)
             .Where(cp => cp.CartId == cart.CartId)
             .ToListAsync();
@@ -52,27 +61,52 @@ namespace P2WebMVC.Controllers
             };
 
             return View(viewModel);
+                
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View();
+            }
+            
         }
 
+
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             Guid? userId = HttpContext.Items["UserId"] as Guid?;
-
+        
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "User"); // Or handle as appropriate
+            }
+        
             var cart = await dbContext.Carts
             .Include(c => c.CartItems)
             .ThenInclude(cp => cp.Product)
             .FirstOrDefaultAsync(c => c.UserId == userId);
+        
+            if (cart == null)
+            {
+                
+                return RedirectToAction("Cart" , "User");
 
-
-
+                
+            }
+        
             // Convert CartProducts to OrderProducts
             var orderItems = cart.CartItems.Select(cp => new OrderItem
             {
                 ProductId = cp.ProductId,
-                Quantity = cp.Quantity
+                Quantity = cp.Quantity,
+                Size = cp.Size,
+                Color = cp.Color,
+                
             }).ToList();
-
+        
             var order = new Order
             {
                 OrderStatus = OrderStatus.Pending,
@@ -80,17 +114,18 @@ namespace P2WebMVC.Controllers
                 UserId = (Guid)userId,
                 OrderItems = orderItems
             };
-
+        
             var createOrder = await dbContext.Orders.AddAsync(order);
-
+        
             dbContext.CartItems.RemoveRange(cart.CartItems);
             cart.CartValue = 0;
             await dbContext.SaveChangesAsync();
-
+        
             return RedirectToAction("Payment", new { order.OrderId });
         }
 
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Payment(Guid OrderId)
         {

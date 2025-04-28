@@ -14,9 +14,13 @@
 			<div class="container-fluid p-0">
 				<div class="row d-md-flex no-gutters slider-text js-fullheight align-items-center justify-content-end"
 					data-scrollax-parent="true">
+
+
 					<div class="one-third order-md-last img js-fullheight"
 						style="background-image:url(images/bg_1.jpg);">
 					</div>
+
+
 					<div class="one-forth d-flex js-fullheight align-items-center ftco-animate"
 						data-scrollax=" properties: { translateY: '70%' }">
 						<div class="text">
@@ -32,6 +36,8 @@
 							</div>
 						</div>
 					</div>
+
+
 				</div>
 			</div>
 		</div>
@@ -188,23 +194,42 @@
 							<h3><a asp-controller="Product" asp-action="Details"
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
+								
 								<div class="pricing">
 									<p class="price"><span>$ @product.Price</span></p>
 								</div>
+
+
 								<div class="rating">
-									<p class="text-right">
-										<a href="#"><span class="ion-ios-star-outline"></span></a>
-										<a href="#"><span class="ion-ios-star-outline"></span></a>
-										<a href="#"><span class="ion-ios-star-outline"></span></a>
-										<a href="#"><span class="ion-ios-star-outline"></span></a>
-										<a href="#"><span class="ion-ios-star-outline"></span></a>
-									</p>
+								 <p class="text-right">
+                 		       @{
+                          		  var rating = (int)(Model?.Product?.Rating ?? 0);
+                          			  for (int i = 1; i <= 5; i++)
+                          		{
+                                if (i <= rating)
+                                {
+                                    <a href="#"><span class="ion-ios-star"></span></a>
+                                }
+                                else
+				                        {
+                                    <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                		}
+                          			}
+            					}
+              				     </p>
+
+									
 								</div>
+
+
 							</div>
 							<p class="bottom-area d-flex px-3">
+								
 								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
-									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-											class="ion-ios-add ml-1"></i></span></a>
+									class="add-to-cart text-center py-2 mr-1">
+									<span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+
+
 								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
 											class="ion-ios-cart ml-1"></i></span></a> *@
 							</p>

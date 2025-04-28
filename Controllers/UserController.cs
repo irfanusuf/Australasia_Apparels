@@ -261,21 +261,33 @@ namespace P2WebMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAddress(Address address)
         {
+
+            try
+            {
             Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
             var availableAdderess = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
 
 
-            if (ModelState.IsValid)
+            if (Guid.Empty != address.AddressId)
             {
                 address.UserId = (Guid)userId;
                 await dbContext.Addresses.AddAsync(address);
                 await dbContext.SaveChangesAsync();
-                return RedirectToAction("CheckOut");
+                return RedirectToAction("CheckOut" , "Order");
             }
 
-            ViewBag.ErrorMessage = "Address updation un-successfull !";
-            return View("CheckOut");
+            TempData["ErrorMessage"] = "Address updation un-successfull !";
+            return RedirectToAction("CheckOut", "Order");
+                
+            }
+            catch (System.Exception ex)
+            {
+                
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+          
         }
 
 

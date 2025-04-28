@@ -1,0 +1,58 @@
+﻿@model P2WebMVC.Models.ViewModels.HybridViewModel
+@{
+
+    ViewData["Title"] = "Payment";
+}
+
+
+<div class="container mt-4">
+    <h2>Payment</h2>
+
+    <div class="mb-3">
+        <strong>Order ID:</strong> @Model?.Order?.OrderId
+    </div>
+
+     <div class="mb-3">
+        <h4>Order Items</h4>
+        <ul class="list-group">
+            @foreach (var item in Model?.OrderItems)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @item?.Product?.Name
+                    <span class="badge bg-primary rounded-pill">@item?.Quantity x @item?.Product?.Price.ToString("C")</span>
+                </li>
+            }
+        </ul>
+    </div> 
+
+    <div class="mb-3">
+        <h4>Shipping Address</h4>
+        <address>
+            @Model?.Address?.FirstName @Model?.Address?.LastName <br />
+            @Model?.Address?.Street,<br /> 
+            @Model?.Address?.Phone <br/>
+            @Model?.Address?.City, @Model?.Address?.State @Model?.Address?.Pincode<br />
+            @Model?.Address?.Country
+        </address>
+    </div>
+
+    <div id="email-verification-section" class="mb-3">
+        <button id="verify-email-btn" class="btn btn-warning" onclick="verifyEmail()">Verify Email</button>
+        <span id="verification-status" class="ms-2"></span>
+    </div>
+
+    <div id="pay-section" class="mb-3" style="display:none;">
+        <a class="btn btn-success">Pay</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function verifyEmail() {
+            // Simulate email verification
+            document.getElementById('verification-status').innerText = 'Email verified!';
+            document.getElementById('verify-email-btn').disabled = true;
+            document.getElementById('pay-section').style.display = 'block';
+        }
+    </script>
+}
