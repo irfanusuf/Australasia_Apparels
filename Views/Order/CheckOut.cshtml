@@ -1,5 +1,7 @@
-﻿
+﻿@using P2WebMVC.Types
+
 @model P2WebMVC.Models.ViewModels.HybridViewModel
+
 
 @{
     ViewData["Title"] = "CheckOut";
@@ -175,7 +177,7 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
-                                        <label><input type="radio" name="optradio" class="mr-2" required> Razor Pay
+                                        <label><input type="radio" name="paymentOption" class="mr-2" required value="@PaymentStatus.RazorPay"> Razor Pay
                                             </label>
                                     </div>
                                 </div>
@@ -185,7 +187,7 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
-                                        <label><input type="radio" name="optradio" class="mr-2" required> Cash On Delivery
+                                        <label><input type="radio" name="paymentOption" class="mr-2" required value="@PaymentStatus.CashOnDelivery"> Cash On Delivery
                                             </label>
                                     </div>
                                 </div>

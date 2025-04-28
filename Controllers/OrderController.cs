@@ -74,8 +74,8 @@ namespace P2WebMVC.Controllers
 
 
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Create()
+        [HttpPost]
+        public async Task<IActionResult> Create(PaymentStatus paymentOption)
         {
             Guid? userId = HttpContext.Items["UserId"] as Guid?;
         
@@ -115,7 +115,7 @@ namespace P2WebMVC.Controllers
             var order = new Order
             {
                 OrderStatus = OrderStatus.Pending,
-                PaymentStatus = PaymentStatus.None,
+                PaymentStatus = paymentOption,
                 Address = address,
                 TotalPrice = cart.CartValue,
                 UserId = (Guid)userId,
