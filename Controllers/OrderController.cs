@@ -34,16 +34,16 @@ namespace P2WebMVC.Controllers
             {
              Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
+            
+
+
             var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.CartId == CartId); // finding cart of user 
 
             if (cart == null ||  cart.CartValue == 0)
             {
-                return RedirectToAction("Cart" , "User");     // have to watch it in future if there are no items in cart .. 
+                return RedirectToAction("Cart" , "User");     
             }
 
-
-            // Console.WriteLine("cart caout" + cart.CartId);
-            // Console.WriteLine("this is userId" + userId);
 
             var address = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
 
@@ -66,7 +66,7 @@ namespace P2WebMVC.Controllers
             catch (System.Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
-                return View();
+                return View("Error");
             }
             
         }
@@ -83,18 +83,23 @@ namespace P2WebMVC.Controllers
             {
                 return RedirectToAction("Login", "User"); // Or handle as appropriate
             }
+
+            var address = await dbContext.Addresses.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if(address == null){
+                ViewBag.AddressErrorMessage ="Kindly Fill in Address or select any Address from the list";
+                return View("CheckOut");
+            }
         
             var cart = await dbContext.Carts
             .Include(c => c.CartItems)
             .ThenInclude(cp => cp.Product)
             .FirstOrDefaultAsync(c => c.UserId == userId);
         
-            if (cart == null)
+            if (cart == null || cart.CartValue == 0)
             {
-                
                 return RedirectToAction("Cart" , "User");
-
-                
+     
             }
         
             // Convert CartProducts to OrderProducts
@@ -110,6 +115,8 @@ namespace P2WebMVC.Controllers
             var order = new Order
             {
                 OrderStatus = OrderStatus.Pending,
+                PaymentStatus = PaymentStatus.None,
+                Address = address,
                 TotalPrice = cart.CartValue,
                 UserId = (Guid)userId,
                 OrderItems = orderItems
@@ -123,6 +130,12 @@ namespace P2WebMVC.Controllers
         
             return RedirectToAction("Payment", new { order.OrderId });
         }
+
+
+
+
+
+
 
 
         [Authorize]

@@ -6,14 +6,14 @@
 
 
 <div class="container mt-4">
-    <h2>Payment</h2>
+    <h4>Payment</h4>
 
     <div class="mb-3">
         <strong>Order ID:</strong> @Model?.Order?.OrderId
     </div>
 
      <div class="mb-3">
-        <h4>Order Items</h4>
+        <h5>Order Items</h5>
         <ul class="list-group">
             @foreach (var item in Model?.OrderItems)
             {
@@ -26,7 +26,15 @@
     </div> 
 
     <div class="mb-3">
-        <h4>Shipping Address</h4>
+        <h5>Order Total</h5>
+        <p><strong>Total Amount:</strong> @Model?.Order.TotalPrice.ToString("C")</p>
+
+
+    </div> 
+
+
+    <div class="mb-3">
+        <h5>Shipping Address</h5>
         <address>
             @Model?.Address?.FirstName @Model?.Address?.LastName <br />
             @Model?.Address?.Street,<br /> 

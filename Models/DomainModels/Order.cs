@@ -12,6 +12,12 @@ public class Order
 [Key]
 public  Guid OrderId { get; set; } = Guid.NewGuid();
 public required OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+
+public required PaymentStatus PaymentStatus {get;set;} =  PaymentStatus.None;
+
+public required Address Address {get;set;}
+
+
 public required decimal TotalPrice { get; set; } = 0;
 public  Guid UserId { get; set; }  // Fk 
 

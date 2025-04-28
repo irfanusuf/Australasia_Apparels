@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models;
@@ -192,7 +193,7 @@ namespace P2WebMVC.Controllers
 
                 if (cart == null || cart.CartItems.Count == 0)
                 {
-                    ViewBag.CartEmpty = "Your Cart is Empty";
+                    ViewBag.CartEmpty = "Your Cart is Empty";    // used in if condition
                     return View(viewModel);
                 }
 
@@ -206,7 +207,7 @@ namespace P2WebMVC.Controllers
                 viewModel.CartItems = cartItems;
                 viewModel.Cart = cart;
 
-        
+
                 return View(viewModel);
             }
             catch (System.Exception ex)
@@ -223,37 +224,40 @@ namespace P2WebMVC.Controllers
         public async Task<IActionResult> Orders()
         {
 
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            // var orders = await dbContext.Orders.Where(o => o.BuyerId == userId).ToListAsync();// finding order using orderId
-
-            var orders = await dbContext.Orders
-             .Include(o => o.OrderItems)  // Include OrderProducts
-             .ThenInclude(op => op.Product)  // Include related Product
-             .Where(o => o.UserId == userId)
-             .ToListAsync();
-
-
-            if (orders.Count == 0)
+            try
             {
-                ViewBag.errorMessage = "No Orders Found";
-                return View();
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                // var orders = await dbContext.Orders.Where(o => o.BuyerId == userId).ToListAsync();// finding order using orderId
+
+                   //  var orderproducts = await dbContext.OrderProducts
+                // .Include(op => op.Product)
+                // .Where(op => orders.Select(o=>o.OrderId).Contains(op.OrderId))
+                // .ToListAsync();
+
+                var orders = await dbContext.Orders
+                 .Include(o => o.OrderItems)  // Include OrderProducts
+                 .ThenInclude(op => op.Product)  // Include related Product
+                 .Where(o => o.UserId == userId)
+                 .ToListAsync();
+
+
+                var viewModel = new OrderViewModel
+                {
+                    Orders = orders
+                };
+
+                return View(viewModel);
+
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+                throw;
             }
 
-            //  var orderproducts = await dbContext.OrderProducts
-            // .Include(op => op.Product)
-            // .Where(op => orders.Select(o=>o.OrderId).Contains(op.OrderId))
-            // .ToListAsync();
-
-            // viewModel.OrderProducts = orderproducts;
-
-            var viewModel = new OrderViewModel
-            {
-
-                Orders = orders
-            };
-
-            return View(viewModel);
         }
 
 
@@ -264,30 +268,34 @@ namespace P2WebMVC.Controllers
 
             try
             {
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "User");
+                }
 
-            var availableAdderess = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
+                var availableAdderess = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
 
 
-            if (Guid.Empty != address.AddressId)
-            {
-                address.UserId = (Guid)userId;
-                await dbContext.Addresses.AddAsync(address);
-                await dbContext.SaveChangesAsync();
-                return RedirectToAction("CheckOut" , "Order");
-            }
+                if (ModelState.IsValid)
+                {
+                    address.UserId = (Guid)userId;
+                    await dbContext.Addresses.AddAsync(address);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction("CheckOut", "Order");
+                }
 
-            TempData["ErrorMessage"] = "Address updation un-successfull !";
-            return RedirectToAction("CheckOut", "Order");
-                
+                TempData["ErrorMessage"] = "Address updation un-successfull !";
+                return RedirectToAction("CheckOut", "Order");
+
             }
             catch (System.Exception ex)
             {
-                
+
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }
-          
+
         }
 
 
