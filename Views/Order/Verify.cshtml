@@ -155,7 +155,7 @@
                 handler: function (response) {
                     console.log("Payment Success:", response);
                     const redirectOrderId = document.getElementById('orderId').innerText.trim();
-                    const redirectUrl = `http://localhost:5153/Order/PaymentSuccess?OrderId=${redirectOrderId}`;
+                    const redirectUrl = `https://australasia-apparels.shop/Order/PaymentSuccess?OrderId=${redirectOrderId}`;
                     window.location.href = redirectUrl;
                 },
                 theme: {
