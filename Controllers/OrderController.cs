@@ -250,7 +250,7 @@ namespace P2WebMVC.Controllers
     <p>Thank you for shopping with <strong>Australasia Apparels</strong>.</p>
     <p>Please verify your order by clicking the button below:</p>
 
-    <a href='http://localhost:5153/order/verifiedByEmail?OrderId={OrderId}' class='btn'>Verify My Order</a>
+    <a href='https://australasia-apparels.shop/order/verifiedByEmail?OrderId={OrderId}' class='btn'>Verify My Order</a>
 
     <p>If you have any questions or need help, feel free to <a href='https://australasia-apparels.shop/support'>contact our support team</a>.</p>
 
@@ -353,7 +353,7 @@ namespace P2WebMVC.Controllers
             <p>We received a request to cancel your order with the ID <strong>{order?.OrderId}</strong>.</p>
             <p>If you initiated this cancellation, please confirm it by clicking the button below:</p>
             <p style='margin: 20px 0;'>
-                <a href='http://localhost:5153/Order/ConfirmCancellation?OrderId={order?.OrderId}' 
+                <a href='https://australasia-apparels.shop/Order/ConfirmCancellation?OrderId={order?.OrderId}' 
                    style='display: inline-block; padding: 10px 20px; background-color: #d9534f; 
                           color: white; text-decoration: none; border-radius: 5px;'>
                     Confirm Cancellation
