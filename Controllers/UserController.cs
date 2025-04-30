@@ -129,6 +129,8 @@ namespace P2WebMVC.Controllers
 
 
                     HttpContext.Session.Remove("ReturnUrl");
+                    HttpContext.Session.SetString("UserId", existingUser.UserId.ToString());
+
 
 
                     if (!string.IsNullOrEmpty(returnUrl))
@@ -136,22 +138,11 @@ namespace P2WebMVC.Controllers
                         return Redirect(returnUrl);
                     }
 
-                    if (existingUser.Role == Role.User)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else if (existingUser.Role == Role.StoreKeeper)
-                    {
-                        return RedirectToAction("Index", "StoreKeeper");
-                    }
-                    else if (existingUser.Role == Role.Admin)
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
+                 
                     else
                     {
-                        ViewBag.errorMessage = "Something Went Wrong Kindly Try Again after Sometime!";
-                        return View("Error");
+                        
+                        return RedirectToAction("UserIndex" , "Home");
                     }
                 }
                 else
@@ -338,13 +329,17 @@ namespace P2WebMVC.Controllers
 
 
 
-        [Authorize]
+
         [HttpGet]
         public ActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("AuthorizationToken");
+            HttpContext.Session.Clear();
+
+            TempData["LogoutMessage"] = "You have been logged out successfully.";
             return RedirectToAction("Index", "Home");
         }
+
 
     }
 

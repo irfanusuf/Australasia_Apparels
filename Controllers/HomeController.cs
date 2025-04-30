@@ -27,6 +27,7 @@ public class HomeController : Controller
             // fetch products from the database
             var products = await dbContext.Products.Where(p => p.IsActive).ToListAsync();
 
+
             var viewModel = new ProductViewModel
             {
                 Products = products
@@ -43,6 +44,51 @@ public class HomeController : Controller
         }
 
     }
+
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> UserIndex()
+    {
+        try
+        {
+             Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            // fetch products from the database
+
+            var user = await dbContext.Users.FindAsync(userId);
+
+            
+            var products = await dbContext.Products.Where(p => p.IsActive).ToListAsync();
+
+            if(user == null || products ==null){
+
+                ViewBag.ErrorMessage = "Something Went Wrong . Try again after Sometime";
+                return View("Error");
+            }
+
+
+            var viewModel = new ProductViewModel
+            {
+                Products = products,
+                User = user
+            };
+
+            return View(viewModel);
+        }
+        catch (System.Exception ex)
+        {
+            // Log the exception
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Error");
+
+        }
+
+    }
+
+
+
+
 
     public IActionResult Privacy()
     {
