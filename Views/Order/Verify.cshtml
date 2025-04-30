@@ -19,7 +19,11 @@
             {
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     @item?.Product?.Name
-                    <span class="badge bg-primary rounded-pill">@item?.Quantity x @item?.Product?.Price.ToString("C")</span>
+                    <span class="badge bg-primary rounded-pill">
+                        @item?.Quantity x @(
+                            string.Format("{0:0.00}", item?.Product?.Price - (item?.Product?.Price * (item?.Product?.Discount ?? 0) / 100) ) 
+                        )
+                    </span>
                 </li>
             }
         </ul>
@@ -27,7 +31,8 @@
 
     <div class="mb-3">
         <h5>Order Total</h5>
-        <p><strong>Total Amount:</strong> @Model?.Order.TotalPrice.ToString("C")</p>
+        <p> <strong> Shipping Cost :</strong>  $ 5.00</p>
+        <p><strong>Total Amount:</strong> $ @(Model?.Order.TotalPrice + 5)  ( With Shipping included)</p>
 
 
     </div> 
@@ -44,10 +49,14 @@
         </address>
     </div>
 
-    <div id="email-verification-section" class="mb-3">
-        <button id="verify-email-btn" class="btn btn-warning" onclick="verifyEmail()">Verify Email</button>
-        <span id="verification-status" class="ms-2"></span>
+    <div class="mb-3">
+        <a  asp-controller="Order" asp-action="SendEmail" asp-route-OrderId ="@Model?.Order?.OrderId" class="btn btn-warning">Verify Order through Email</a>
+
+
+        <span class="ms-5"> @TempData["EmailMessage"]  </span>
     </div>
+
+
 
     <div id="pay-section" class="mb-3" style="display:none;">
         <a class="btn btn-success">Pay</a>

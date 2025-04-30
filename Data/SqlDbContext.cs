@@ -49,10 +49,12 @@ public class SqlDbContext : DbContext
 
 
 
-                modelBuilder.Entity<Order>()
-                        .HasOne(o => o.Address)
-                        .WithOne(a => a.Order)
-                        .HasForeignKey<Order>(o => o.AddressId).OnDelete(DeleteBehavior.NoAction);
+               modelBuilder.Entity<Order>()
+                         .HasOne(o => o.Address)
+                         .WithMany(a => a.Orders) // ✅ No navigation property on Address, or use WithMany(a => a.Orders)
+                         .HasForeignKey(o => o.AddressId)
+                        .OnDelete(DeleteBehavior.NoAction);
+
 
 
 

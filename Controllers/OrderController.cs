@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using P2WebMVC.Data;
+using P2WebMVC.Interfaces;
 using P2WebMVC.Models.DomainModels;
 using P2WebMVC.Models.JunctionModels;
 using P2WebMVC.Models.ViewModels;
@@ -15,11 +16,14 @@ namespace P2WebMVC.Controllers
         private readonly SqlDbContext dbContext;
         private readonly RazorPayService razorpayService;
 
+        private readonly IMailService mailService;
 
-        public OrderController(SqlDbContext dbContext)
+
+        public OrderController(SqlDbContext dbContext ,IMailService mailService)
         {
 
             this.dbContext = dbContext;
+            this.mailService = mailService;
             razorpayService = new RazorPayService();
 
         }
@@ -77,7 +81,10 @@ namespace P2WebMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PaymentStatus paymentOption)
         {
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            try
+            {
+                 Guid? userId = HttpContext.Items["UserId"] as Guid?;
         
             if (userId == null)
             {
@@ -116,7 +123,7 @@ namespace P2WebMVC.Controllers
             {
                 OrderStatus = OrderStatus.Pending,
                 PaymentStatus = paymentOption,
-                Address = address,
+                AddressId = address.AddressId,
                 TotalPrice = cart.CartValue,
                 UserId = (Guid)userId,
                 OrderItems = orderItems
@@ -128,19 +135,24 @@ namespace P2WebMVC.Controllers
             cart.CartValue = 0;
             await dbContext.SaveChangesAsync();
         
-            return RedirectToAction("Payment", new { order.OrderId });
+            return RedirectToAction("Verify", new { order.OrderId });
+            }
+            catch (System.Exception ex)
+            {
+                
+                    ViewBag.ErrorMessage = ex.Message ;
+                    return View ("Error");
+            }
+
+           
         }
-
-
-
-
 
 
 
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Payment(Guid OrderId)
+        public async Task<IActionResult> Verify(Guid OrderId)
         {
             Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
@@ -173,5 +185,45 @@ namespace P2WebMVC.Controllers
             return View(viewModel);
         }
 
+
+
+
+
+
+        [Authorize]
+        [HttpGet]
+
+        public async Task <IActionResult> SendEmail (Guid OrderId){
+
+
+            try
+            {
+
+              Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+              var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+              if(user == null){
+                RedirectToAction ("Login" , "User");
+              }
+
+              var order = await dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == OrderId);
+
+            //    await mailService.SendEmailAsync(user?.Email , "Order Verification " , "This email is for order verification on australasia apparels " ,true); 
+
+                 
+
+            TempData["EmailMessage"] = "Mail sent to your Mail Id . Kindly check Your mail box and search for our mail and press verify!";
+              return RedirectToAction("Verify" ,  new { order?.OrderId });
+
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View();
+             
+            }
+
+        }
     }
 }

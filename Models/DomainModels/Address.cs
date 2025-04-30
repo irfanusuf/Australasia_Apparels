@@ -19,7 +19,7 @@ public class Address
     public required string Pincode { get; set; }
     public required string Phone { get; set; }
    
-    public Order? Order {get;set;}
+    public  ICollection<Order> Orders {get;set;} = [];
 
 
 

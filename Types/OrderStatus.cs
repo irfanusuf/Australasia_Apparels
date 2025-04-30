@@ -4,6 +4,7 @@ public enum OrderStatus
 {
 
     Pending,
+    Verified,
     Shipped,
     InTransit,
     Delivered,
