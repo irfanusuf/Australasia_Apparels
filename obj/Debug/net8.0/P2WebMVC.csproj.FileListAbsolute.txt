@@ -687,3 +687,6 @@
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/Newtonsoft.Json.dll
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/BouncyCastle.Crypto.dll
 /home/irfan_usuf/Projects/Australasia_Apparels/bin/Debug/net8.0/Razorpay.dll
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/appsettings.Development.json
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/BouncyCastle.Crypto.dll
+/home/irfanusuf/Australasia_Apparels/bin/Debug/net8.0/Razorpay.dll

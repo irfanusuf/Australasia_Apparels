@@ -5,7 +5,7 @@ using P2WebMVC.Interfaces;
 
 namespace P2WebMVC.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
 
 
@@ -25,13 +25,13 @@ namespace P2WebMVC.Controllers
             }
             try
             {
-                var order = razorpayService.CreateOrder(model.Amount, model.Currency, model.OrderId);
+                var order = razorpayService.CreateOrder(model.Amount/100, model.Currency, model.OrderId);
 
                 if (order == null)
                 {
-                    return StatusCode(500, "Failed to create payment order.");
+                    return StatusCode(500, "Failed to create payment order.");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                 }
-
+    
                 return Ok(new
                 {
                     orderId = order["id"].ToString(),
@@ -48,6 +48,9 @@ namespace P2WebMVC.Controllers
             }
             catch (Exception ex)
             {
+
+
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, new{
                     message = "server Error",
                     Error = ex.Message

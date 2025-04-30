@@ -36,7 +36,7 @@ public class EmailService : IMailService
 
         var mailMessage = new MailMessage
         {
-            From = new MailAddress(_smtpUsername),
+            From = new MailAddress("sales@australasia-apparels.shop"),
             Subject = subject,
             Body = body,
             IsBodyHtml = isHtml

@@ -1,4 +1,5 @@
-﻿@model P2WebMVC.Models.ViewModels.HybridViewModel
+﻿@using P2WebMVC.Types
+@model P2WebMVC.Models.ViewModels.HybridViewModel
 @{
 
     ViewData["Title"] = "Payment";
@@ -9,10 +10,10 @@
     <h4>Payment</h4>
 
     <div class="mb-3">
-        <strong>Order ID:</strong> @Model?.Order?.OrderId
+        <strong>Order ID:</strong><span id="orderId">@Model?.Order?.OrderId</span>
     </div>
 
-     <div class="mb-3">
+    <div class="mb-3">
         <h5>Order Items</h5>
         <ul class="list-group">
             @foreach (var item in Model?.OrderItems)
@@ -21,46 +22,152 @@
                     @item?.Product?.Name
                     <span class="badge bg-primary rounded-pill">
                         @item?.Quantity x @(
-                            string.Format("{0:0.00}", item?.Product?.Price - (item?.Product?.Price * (item?.Product?.Discount ?? 0) / 100) ) 
-                        )
-                    </span>
-                </li>
-            }
+                        string.Format("{0:0.00}", item?.Product?.Price - (item?.Product?.Price * (item?.Product?.Discount ??
+                        0) / 100))
+                                        )
+                </span>
+            </li>
+                        }
         </ul>
-    </div> 
+    </div>
 
     <div class="mb-3">
         <h5>Order Total</h5>
-        <p> <strong> Shipping Cost :</strong>  $ 5.00</p>
-        <p><strong>Total Amount:</strong> $ @(Model?.Order.TotalPrice + 5)  ( With Shipping included !)</p>
+        <p> <strong> Shipping Cost :</strong> $ 5.00</p>
+        <p><strong>Total Amount:</strong> $ <span id="amount"> @((Model?.Order?.TotalPrice ?? 0) + 5.00m) </span> ( With
+            Shipping
+            included !)</p>
 
 
-    </div> 
+    </div>
 
 
     <div class="mb-3">
         <h5>Shipping Address</h5>
         <address>
             @Model?.Address?.FirstName @Model?.Address?.LastName <br />
-            @Model?.Address?.Street,<br /> 
-            @Model?.Address?.Phone <br/>
+            @Model?.Address?.Street,<br />
+            @Model?.Address?.Phone <br />
             @Model?.Address?.City, @Model?.Address?.State @Model?.Address?.Pincode<br />
             @Model?.Address?.Country
+
         </address>
     </div>
 
-    <div class="mb-3">
-        <a  asp-controller="Order" asp-action="SendEmail" asp-route-OrderId ="@Model?.Order?.OrderId" class="btn btn-warning me-5">Verify Order through Email</a>
 
 
-        <span class="ms-5"> @TempData["EmailMessage"]  </span>
+
+    <div class="mb-2">
+
+        <span class="text-success"> @TempData["EmailMessage"] </span>
     </div>
 
-@* 
 
-    <div id="pay-section" class="mb-3">
-        <a class="btn btn-success">Pay</a>
-    </div> *@
+
+    @if (Model?.Order?.OrderStatus == OrderStatus.Pending && TempData["EmailMessage"] == null)
+    {
+
+        <div class="mb-3">
+            <a asp-controller="Order" asp-action="SendEmail" asp-route-OrderId="@Model?.Order?.OrderId"
+                class="btn btn-warning me-5">Verify Order through Email</a>
+        </div>
+    }
+
+
+
+
+    @if (Model?.Order?.OrderStatus == OrderStatus.Verified)
+    {
+        <div class="mb-3">
+            <button class="btn btn-primary btn-sm" type="button" onclick="payNow()">Pay Now</button>
+        </div>
+    }
+
+    
+    @if (Model?.Order?.OrderStatus == OrderStatus.Cancelled)
+    {
+        <div class="mb-3">
+           <a asp-controller="User" asp-action="Orders" class="btn btn-outline-primary m-2">Back to your Orders</a>
+        </div>
+    }
+
+    @* <a asp-controller="Product" asp-action="Index" asp-route-Category="Bestsellers"
+        class="btn btn-outline-primary m-2">View Bestsellers</a>
+    <a asp-controller="Product" asp-action="Index" asp-route-Category="Trending"
+        class="btn btn-outline-success m-2">Trending Now</a> *@
+    
+
+</div>
 </div>
 
 
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+
+<script>
+    async function payNow() {
+        console.log("Button Clicked");
+
+        const amount = Math.round(parseFloat(document.getElementById('amount').innerText.trim()) * 100);
+        const orderId = document.getElementById('orderId').innerText.trim();
+
+
+
+        if (!amount || amount <= 0 || !orderId) {
+            alert("Invalid amount or missing order ID");
+            return;
+        }
+
+        try {
+            const response = await fetch('/paymentApi/create/paymentIntent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: amount, currency: 'USD', orderId: orderId })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Payment API Error:", errorText);
+                alert("Failed to create order");
+                return;
+            }
+
+            const order = await response.json();
+
+            const options = {
+                key: 'rzp_test_RgG9AwfnysizZu',
+                amount: order.amount,
+                currency: order.currency,
+                name: '@Model?.Address?.FirstName',
+                description: 'Payment Transaction',
+                order_id: order.orderId,
+                prefill: {
+                    name: '@Model?.Address?.FirstName @Model?.Address?.LastName',
+                    email: '@Model?.Order?.Buyer?.Email',
+                    contact: '@Model?.Address?.Phone'
+                },
+                handler: function (response) {
+                    console.log("Payment Success:", response);
+                    const redirectOrderId = document.getElementById('orderId').innerText.trim();
+                    const redirectUrl = `http://localhost:5153/Order/PaymentSuccess?OrderId=${redirectOrderId}`;
+                    window.location.href = redirectUrl;
+                },
+                theme: {
+                    color: '#F37254'
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            alert("An error occurred. Check console.");
+        }
+    }
+</script>

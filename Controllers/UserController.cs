@@ -221,7 +221,7 @@ namespace P2WebMVC.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(OrderStatus OrderFilter)
         {
 
 
@@ -231,24 +231,61 @@ namespace P2WebMVC.Controllers
 
                 // var orders = await dbContext.Orders.Where(o => o.BuyerId == userId).ToListAsync();// finding order using orderId
 
-                   //  var orderproducts = await dbContext.OrderProducts
+                //  var orderproducts = await dbContext.OrderProducts
                 // .Include(op => op.Product)
                 // .Where(op => orders.Select(o=>o.OrderId).Contains(op.OrderId))
                 // .ToListAsync();
-
-                var orders = await dbContext.Orders
-                 .Include(o => o.OrderItems)  // Include OrderProducts
-                 .ThenInclude(op => op.Product)  // Include related Product
-                 .Where(o => o.UserId == userId)
-                 .ToListAsync();
-
-
-                var viewModel = new OrderViewModel
+                if (OrderFilter == OrderStatus.Cancelled)
                 {
-                    Orders = orders
-                };
+                    var orders = await dbContext.Orders
+                                      .Include(o => o.OrderItems)  // Include OrderProducts
+                                      .ThenInclude(op => op.Product)  // Include related Product
+                                      .Where(o => o.UserId == userId && o.OrderStatus == OrderFilter)
+                                      .ToListAsync();
 
-                return View(viewModel);
+                    var viewModel = new OrderViewModel
+                    {
+                        Orders = orders
+                    };
+                    ViewBag.OrderFilter = "Cancelled";
+                    return View(viewModel);
+                }
+                else if (OrderFilter == OrderStatus.InTransit)
+                {
+
+                    var orders = await dbContext.Orders
+                                  .Include(o => o.OrderItems)  // Include OrderProducts
+                                  .ThenInclude(op => op.Product)  // Include related Product
+                                  .Where(o => o.UserId == userId && o.OrderStatus == OrderFilter)
+                                  .ToListAsync();
+
+                    var viewModel = new OrderViewModel
+                    {
+                        Orders = orders
+                    };
+                    ViewBag.OrderFilter = "In Transit";
+                    return View(viewModel);
+                }
+                else
+                {
+                    var orders = await dbContext.Orders
+                                 .Include(o => o.OrderItems)  // Include OrderProducts
+                                 .ThenInclude(op => op.Product)  // Include related Product
+                                 .Where(o => o.UserId == userId && o.OrderStatus != OrderStatus.Cancelled)
+                                 .ToListAsync();
+
+                    var viewModel = new OrderViewModel
+                    {
+                        Orders = orders
+                    };
+                    ViewBag.OrderFilter = "Recent";
+                    return View(viewModel);
+                }
+
+
+
+
+
 
             }
             catch (System.Exception ex)
