@@ -55,7 +55,20 @@
                             <div class="select-wrap">
                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
 
-                                @Html.DropDownList("Size", (SelectList)ViewBag.SizeList, "Select Size", new { @class = "form-control" }) 
+                            @{
+                                var SizeString = Model?.Product?.Size ?? "";
+                                var SizeList = SizeString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                           .Select(c => c.Trim())
+                                                           .Where(c => !string.IsNullOrWhiteSpace(c))
+                                                           .ToList();
+                            }
+                            <select name="Size" class="form-control">
+                                <option value="">Select Size</option>
+                                @foreach (var size in SizeList)
+                                {
+                                    <option value="@size">@size</option>
+                                }
+                            </select>
                                
                                 
                             </div>

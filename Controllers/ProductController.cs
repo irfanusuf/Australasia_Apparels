@@ -84,14 +84,14 @@ namespace P2WebMVC.Controllers
                     Product = product,
                 };
 
-                ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
+                // ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
                 return View(viewModel);
             }
             catch (System.Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
-                throw;
+          
             }
         }
 
@@ -103,7 +103,7 @@ namespace P2WebMVC.Controllers
         // check add to cart for differnet color and sizes
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddToCart(Guid ProductId, int quantity, ProductSize size, string color)
+        public async Task<ActionResult> AddToCart(Guid ProductId, int quantity, string size, string color)
         {
             try
             {
@@ -246,7 +246,7 @@ namespace P2WebMVC.Controllers
                         CartId = cart.CartId,
                         ProductId = ProductId,
                         Quantity = 1,
-                        Size = ProductSize.Medium,
+                        Size =  "Free Size",
                         Color = "Default"
                     };
 

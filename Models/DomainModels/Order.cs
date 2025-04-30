@@ -15,12 +15,16 @@ public required OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
 
 public required PaymentStatus PaymentStatus {get;set;} =  PaymentStatus.None;
 
-public required Address Address {get;set;}
+
+public Guid AddressId {get;set;}
+[ForeignKey("AddressId")]
+public  Address? Address {get;set;}
 
 
 public required decimal TotalPrice { get; set; } = 0;
-public  Guid UserId { get; set; }  // Fk 
 
+
+public  Guid UserId { get; set; }  // Fk 
 [ForeignKey("UserId")]
 public User? Buyer { get; set; }
 

@@ -31,11 +31,12 @@
 
         <div class="mb-3 d-flex" style="gap: 10px;">
 
-
+@* 
              @Html.DropDownList("Size", (SelectList)ViewBag.SizeList, "Select Size", new { @class =
-            "form-control" }) 
+            "form-control" })  *@
+             <input type="text" class="form-control" name="Size"
+                placeholder="Enter product Sizes here seperated by comma ">
 
-          
 
             <input type="text" class="form-control" name="Color"
                 placeholder="Enter product colors here seperated by comma ">

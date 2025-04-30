@@ -12,8 +12,8 @@ using P2WebMVC.Data;
 namespace P2WebMVC.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    [Migration("20250415195032_SecMigration")]
-    partial class SecMigration
+    [Migration("20250430073255_Mig3")]
+    partial class Mig3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,15 +42,7 @@ namespace P2WebMVC.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("District")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Landmark")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -91,8 +83,8 @@ namespace P2WebMVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CartValue")
-                        .HasColumnType("int");
+                    b.Property<decimal>("CartValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -117,10 +109,16 @@ namespace P2WebMVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ShippingDate")
@@ -133,6 +131,9 @@ namespace P2WebMVC.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -167,7 +168,6 @@ namespace P2WebMVC.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -183,9 +183,15 @@ namespace P2WebMVC.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<string>("Size")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Sold")
+                        .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -213,8 +219,14 @@ namespace P2WebMVC.Migrations
                     b.Property<Guid>("CartItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CartId", "ProductId");
 
@@ -231,11 +243,17 @@ namespace P2WebMVC.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OrderItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId", "ProductId");
 
@@ -270,6 +288,9 @@ namespace P2WebMVC.Migrations
                     b.Property<string>("ProfilePicUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -303,11 +324,19 @@ namespace P2WebMVC.Migrations
 
             modelBuilder.Entity("P2WebMVC.Models.DomainModels.Order", b =>
                 {
+                    b.HasOne("P2WebMVC.Models.DomainModels.Address", "Address")
+                        .WithOne("Order")
+                        .HasForeignKey("P2WebMVC.Models.DomainModels.Order", "AddressId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("P2WebMVC.Models.User", "Buyer")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("Buyer");
                 });
@@ -317,13 +346,13 @@ namespace P2WebMVC.Migrations
                     b.HasOne("P2WebMVC.Models.DomainModels.Cart", "Cart")
                         .WithMany("CartItems")
                         .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("P2WebMVC.Models.DomainModels.Product", "Product")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -336,18 +365,23 @@ namespace P2WebMVC.Migrations
                     b.HasOne("P2WebMVC.Models.DomainModels.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("P2WebMVC.Models.DomainModels.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("P2WebMVC.Models.DomainModels.Address", b =>
+                {
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("P2WebMVC.Models.DomainModels.Cart", b =>

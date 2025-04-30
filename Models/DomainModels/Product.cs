@@ -23,7 +23,7 @@ public required ProductCategory Category { get; set; } = ProductCategory.All;
 public required string SubCategory { get; set; }
 public required string Brand { get; set; }
 public required string Color { get; set; }
-public required ProductSize  Size { get; set; } = ProductSize.FreeSize;
+public required string  Size { get; set; } 
 public required bool IsDeleted { get; set; } = false;
 public required bool IsActive { get; set; } = true;
 public ICollection<CartItem> CartItems { get; set; } = [];

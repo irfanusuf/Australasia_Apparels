@@ -27,7 +27,7 @@ public class OrderItem
 
 
     public required int Quantity { get; set; } 
-    public ProductSize? Size {get;set;}
+    public string ? Size {get;set;}
     public string? Color  {get;set;}
 
 }

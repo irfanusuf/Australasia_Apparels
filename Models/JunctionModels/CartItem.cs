@@ -24,7 +24,7 @@ public class CartItem
 
 
     public int Quantity { get; set; } // Quantity of the product in the cart
-    public ProductSize? Size {get;set;}
+    public string? Size {get;set;}
     public string? Color  {get;set;}
  
 }

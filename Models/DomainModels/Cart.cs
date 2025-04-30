@@ -10,10 +10,13 @@ public class Cart
 
     [Key]
     public Guid CartId { get; set; } = Guid.NewGuid();
-    public Guid UserId { get; set; } // FK
 
+
+    public Guid UserId { get; set; } // FK
     [ForeignKey("UserId")]
     public User? Buyer { get; set; }
+
+
     public decimal CartValue {get;set;}
 
     public ICollection<CartItem> CartItems { get; set; } = [];

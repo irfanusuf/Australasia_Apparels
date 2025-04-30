@@ -26,22 +26,18 @@ namespace P2WebMVC.Controllers
         }
 
 
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var token = Request.Cookies["AuthorizationToken"];
+           Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            if (string.IsNullOrEmpty(token))
-            {
-                return RedirectToAction("login", "user");
-            }
-            var userId = tokenService.VerifyTokenAndGetId(token);
+            var user =  await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
-            if (Guid.Empty == userId)
-            {
-                return RedirectToAction("login", "user");
-            }
-
+           if(user?.Role != Role.Admin){
+            return RedirectToAction("Login" , "User");
+           } 
             var usersCount = await dbContext.Users.CountAsync();
             var ordersCount = await dbContext.Orders.CountAsync();
             var productsCount = await dbContext.Products.CountAsync();
@@ -58,7 +54,7 @@ namespace P2WebMVC.Controllers
         public ActionResult CreateProduct()
         {
             ViewBag.CategoryList = new SelectList(Enum.GetValues(typeof(ProductCategory)));
-            ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
+            // ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
             return View();
         }
 
@@ -107,7 +103,7 @@ namespace P2WebMVC.Controllers
             {
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
-                throw;
+          
             }
 
         }
