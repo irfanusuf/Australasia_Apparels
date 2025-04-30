@@ -39,15 +39,7 @@ namespace P2WebMVC.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("District")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Landmark")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -88,8 +80,8 @@ namespace P2WebMVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CartValue")
-                        .HasColumnType("int");
+                    b.Property<decimal>("CartValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -114,7 +106,7 @@ namespace P2WebMVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderStatus")
@@ -179,7 +171,13 @@ namespace P2WebMVC.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Sold")
                         .HasColumnType("int");
 
                     b.Property<int>("Stock")
@@ -208,7 +206,13 @@ namespace P2WebMVC.Migrations
                     b.Property<Guid>("CartItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Size")
                         .HasColumnType("int");
 
                     b.HasKey("CartId", "ProductId");
@@ -226,10 +230,16 @@ namespace P2WebMVC.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OrderItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Size")
                         .HasColumnType("int");
 
                     b.HasKey("OrderId", "ProductId");

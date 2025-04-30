@@ -16,6 +16,9 @@ public string? ImageUrl { get; set; }
 public required decimal Price { get; set; }
 public required decimal Discount { get; set; }
 public required int Stock { get; set; }
+
+public int Rating {get;set;} = 4;
+public int? Sold {get;set;}
 public required ProductCategory Category { get; set; } = ProductCategory.All;
 public required string SubCategory { get; set; }
 public required string Brand { get; set; }

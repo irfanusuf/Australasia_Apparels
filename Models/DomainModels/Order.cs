@@ -10,18 +10,24 @@ public class Order
 {
 
 [Key]
-public required Guid OrderId { get; set; } = Guid.NewGuid();
+public  Guid OrderId { get; set; } = Guid.NewGuid();
 public required OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+
+public required PaymentStatus PaymentStatus {get;set;} =  PaymentStatus.None;
+
+public required Address Address {get;set;}
+
+
 public required decimal TotalPrice { get; set; } = 0;
-public required Guid UserId { get; set; }  // Fk 
+public  Guid UserId { get; set; }  // Fk 
 
 [ForeignKey("UserId")]
 public User? Buyer { get; set; }
 
 public ICollection<OrderItem> OrderItems { get; set; } = [];
 
-public required DateTime DateCreated { get; set; } = DateTime.UtcNow;
-public required DateTime? ShippingDate { get; set; } =DateTime.UtcNow.AddDays(7);
+public  DateTime? DateCreated { get; set; } = DateTime.UtcNow;
+public  DateTime? ShippingDate { get; set; } =DateTime.UtcNow.AddDays(7);
 
 
 }

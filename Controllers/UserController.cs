@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models;
+using P2WebMVC.Models.DomainModels;
 using P2WebMVC.Models.ViewModels;
 using P2WebMVC.Types;
 
@@ -123,6 +125,17 @@ namespace P2WebMVC.Controllers
                     });
 
 
+                    var returnUrl = HttpContext.Session.GetString("ReturnUrl");
+
+
+                    HttpContext.Session.Remove("ReturnUrl");
+
+
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+
                     if (existingUser.Role == Role.User)
                     {
                         return RedirectToAction("Index", "Home");
@@ -163,30 +176,25 @@ namespace P2WebMVC.Controllers
 
         }
 
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> Cart()
         {
             try
             {
-                var token = Request.Cookies["AuthorizationToken"];
 
-                if (string.IsNullOrEmpty(token))
-                {
-                    return RedirectToAction("Login", "User");
-                }
-                var userId = tokenService.VerifyTokenAndGetId(token);
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-                if (Guid.Empty == userId)
-                {
-                    return RedirectToAction("Login", "User");
-                }
+                var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId); // finding cart of user 
 
-                var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId== userId); // finding cart of user 
+                var viewModel = new CartViewModel();
+
 
                 if (cart == null || cart.CartItems.Count == 0)
                 {
-                    ViewBag.cartEmpty = "Cart is Empty";
-                    return View();
+                    ViewBag.CartEmpty = "Your Cart is Empty";    // used in if condition
+                    return View(viewModel);
                 }
 
                 // for efficency there is serperated cart profucts db query
@@ -196,11 +204,9 @@ namespace P2WebMVC.Controllers
                 .ToListAsync();
 
 
-                var viewModel = new CartViewModel
-                {
-                    CartItems = cartItems,
-                    Cart = cart
-                };
+                viewModel.CartItems = cartItems;
+                viewModel.Cart = cart;
+
 
                 return View(viewModel);
             }
@@ -209,19 +215,99 @@ namespace P2WebMVC.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
 
+            }
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Orders()
+        {
+
+
+            try
+            {
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                // var orders = await dbContext.Orders.Where(o => o.BuyerId == userId).ToListAsync();// finding order using orderId
+
+                   //  var orderproducts = await dbContext.OrderProducts
+                // .Include(op => op.Product)
+                // .Where(op => orders.Select(o=>o.OrderId).Contains(op.OrderId))
+                // .ToListAsync();
+
+                var orders = await dbContext.Orders
+                 .Include(o => o.OrderItems)  // Include OrderProducts
+                 .ThenInclude(op => op.Product)  // Include related Product
+                 .Where(o => o.UserId == userId)
+                 .ToListAsync();
+
+
+                var viewModel = new OrderViewModel
+                {
+                    Orders = orders
+                };
+
+                return View(viewModel);
+
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
                 throw;
             }
 
         }
 
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateAddress(Address address)
+        {
+
+            try
+            {
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                var availableAdderess = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
+
+
+                if (ModelState.IsValid)
+                {
+                    address.UserId = (Guid)userId;
+                    await dbContext.Addresses.AddAsync(address);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction("CheckOut", "Order");
+                }
+
+                TempData["ErrorMessage"] = "Address updation un-successfull !";
+                return RedirectToAction("CheckOut", "Order");
+
+            }
+            catch (System.Exception ex)
+            {
+
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+
+        }
+
+
+
+
+        [Authorize]
         [HttpGet]
         public ActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("AuthorizationToken");
             return RedirectToAction("Index", "Home");
         }
-
-
 
     }
 

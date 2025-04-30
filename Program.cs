@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+
 // dependency injection
 builder.Services.AddSingleton<ITokenService , TokenService>();
 builder.Services.AddSingleton<IMailService , EmailService>();
@@ -24,7 +27,11 @@ if (app.Environment.IsProduction())
     app.UseHsts();
 }
 
+
+
 app.UseExceptionHandler("/Error");
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 
