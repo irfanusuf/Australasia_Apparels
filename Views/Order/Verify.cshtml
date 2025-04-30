@@ -32,7 +32,7 @@
     <div class="mb-3">
         <h5>Order Total</h5>
         <p> <strong> Shipping Cost :</strong>  $ 5.00</p>
-        <p><strong>Total Amount:</strong> $ @(Model?.Order.TotalPrice + 5)  ( With Shipping included)</p>
+        <p><strong>Total Amount:</strong> $ @(Model?.Order.TotalPrice + 5)  ( With Shipping included !)</p>
 
 
     </div> 
@@ -50,26 +50,17 @@
     </div>
 
     <div class="mb-3">
-        <a  asp-controller="Order" asp-action="SendEmail" asp-route-OrderId ="@Model?.Order?.OrderId" class="btn btn-warning">Verify Order through Email</a>
+        <a  asp-controller="Order" asp-action="SendEmail" asp-route-OrderId ="@Model?.Order?.OrderId" class="btn btn-warning me-5">Verify Order through Email</a>
 
 
         <span class="ms-5"> @TempData["EmailMessage"]  </span>
     </div>
 
+@* 
 
-
-    <div id="pay-section" class="mb-3" style="display:none;">
+    <div id="pay-section" class="mb-3">
         <a class="btn btn-success">Pay</a>
-    </div>
+    </div> *@
 </div>
 
-@section Scripts {
-    <script>
-        function verifyEmail() {
-            // Simulate email verification
-            document.getElementById('verification-status').innerText = 'Email verified!';
-            document.getElementById('verify-email-btn').disabled = true;
-            document.getElementById('pay-section').style.display = 'block';
-        }
-    </script>
-}
+
