@@ -16,6 +16,10 @@ public class User
     public required string  Password {get ;set;}
     public string?  ProfilePicUrl {get ;set;}
     public string? Phone {get; set ; }
+
+    public string ? ResetPassToken {get; set;}
+
+    public DateTime? ResetPassTokenExpiry {get; set;}
     public Role Role {get;set;} = Role.User;
     public Address? Address { get; set; }
     public Cart? Cart { get; set; }

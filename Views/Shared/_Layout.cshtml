@@ -32,6 +32,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+        <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/css/animate.css">
@@ -53,6 +55,8 @@
 
 
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+
+
 
     <style>
         .dropdown-item:hover {
@@ -239,9 +243,9 @@
                         <h2>Subcribe to our Newsletter</h2>
                         <div class="row d-flex justify-content-center mt-5">
                             <div class="col-md-8">
-                                <form action="#" class="subscribe-form">
+                                <form method="post" class="subscribe-form" asp-controller="User" asp-action="subscribe">
                                     <div class="form-group d-flex">
-                                        <input type="text" class="form-control" placeholder="Enter email address">
+                                        <input type="text" class="form-control" name="Email" placeholder="Enter email address" required>
                                         <input type="submit" value="Subscribe" class="submit px-3">
                                     </div>
                                 </form>
@@ -283,10 +287,10 @@
                     <div class="ftco-footer-widget mb-4 ml-md-5">
                         <h2 class="ftco-heading-2">Menu</h2>
                         <ul class="list-unstyled">
-                            <li><a href="#" class="py-2 d-block">Shop</a></li>
-                            <li><a href="#" class="py-2 d-block">About</a></li>
+                            <li><a href="/product?category=all" class="py-2 d-block">Shop</a></li>
+                            <li><a href="/home/about" class="py-2 d-block">About</a></li>
                             <li><a href="#" class="py-2 d-block">Catalog</a></li>
-                            <li><a href="#" class="py-2 d-block">Contact Us</a></li>
+                            <li><a href="/home/contact" class="py-2 d-block">Contact Us</a></li>
                         </ul>
                     </div>
                 </div>
@@ -295,15 +299,15 @@
                         <h2 class="ftco-heading-2">Help</h2>
                         <div class="d-flex">
                             <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
-                                <li><a href="#" class="py-2 d-block">Shipping Information</a></li>
-                                <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
-                                <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
-                                <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
+                                <li><a href="/home/shippingInfo" class="py-2 d-block">Shipping Information</a></li>
+                                <li><a href="/home/returnsAndExchange" class="py-2 d-block">Returns &amp; Exchange</a></li>
+                                <li><a href="/home/TermsConditions" class="py-2 d-block">Terms &amp; Conditions</a></li>
+                                <li><a href="/home/PrivacyPolicy" class="py-2 d-block">Privacy Policy</a></li>
                             </ul>
-                            <ul class="list-unstyled">
-                                <li><a href="#" class="py-2 d-block">FAQs</a></li>
-                                <li><a href="#" class="py-2 d-block">Why Choose Us</a></li>
-                            </ul>
+                            @* <ul class="list-unstyled">
+                                <li><a href="/home/Faq" class="py-2 d-block">FAQs</a></li>
+                                <li><a href="/home/About" class="py-2 d-block">Why Choose Us</a></li>
+                            </ul> *@
                         </div>
                     </div>
                 </div>
@@ -312,13 +316,21 @@
                         <h2 class="ftco-heading-2">Have a Questions?</h2>
                         <div class="block-23 mb-3">
                             <ul>
-                                <li><span class="icon icon-map-marker"></span><span class="text">
-                                        Rooty Hill ,NSW Acropolis Avenue
-                                    </span></li>
-                                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+
-                                            456789098787</span></a></li>
-                                <li><a href="#"><span class="icon icon-envelope"></span><span
-                                            class="text">info@Australasia_apparels.com</span></a></li>
+                                <li>
+                                    <span class="icon icon-map-marker"></span>
+                                    <span class="text"> Rooty Hill ,NSW Acropolis Avenue </span>
+                                </li>
+
+
+
+                                <li><a href="#">
+                                <span class="icon icon-phone"></span>
+                                <span class="text">+456789098787</span></a></li>
+
+
+                                <li><a href="#">
+                                    <span class="icon icon-envelope"></span>
+                                    <span class="text">info@Australasia_apparels.com</span></a></li>
                             </ul>
                         </div>
                     </div>

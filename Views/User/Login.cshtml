@@ -24,7 +24,7 @@
       <input type="password" class="form-control" id="exampleInputPassword1" name="Password">
     </div>
 
-    <a class="mb-4" href="/"> Forgot Password ?</a>
+    <a class="mb-4" asp-controller="User" asp-action="ForgotPassword"> Forgot Password ?</a>
 
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" required>
@@ -39,6 +39,7 @@
 
 
     <p class="text-danger pt-3"> @ViewBag.errorMessage </p>
+    <p class="text-success pt-3"> @TempData["successMessage"] </p>
 
 
   </form>

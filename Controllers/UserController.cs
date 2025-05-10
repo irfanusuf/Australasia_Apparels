@@ -16,11 +16,13 @@ namespace P2WebMVC.Controllers
 
         private readonly SqlDbContext dbContext;    // encapsulated feilds
         private readonly ITokenService tokenService;
+        private readonly IMailService emailService;
 
-        public UserController(SqlDbContext dbContext, ITokenService tokenService)
+        public UserController(SqlDbContext dbContext, ITokenService tokenService, IMailService emailService)
         {
             this.dbContext = dbContext;
             this.tokenService = tokenService;
+            this.emailService = emailService;
         }
 
 
@@ -138,11 +140,11 @@ namespace P2WebMVC.Controllers
                         return Redirect(returnUrl);
                     }
 
-                 
+
                     else
                     {
-                        
-                        return RedirectToAction("UserIndex" , "Home");
+
+                        return RedirectToAction("UserIndex", "Home");
                     }
                 }
                 else
@@ -166,7 +168,6 @@ namespace P2WebMVC.Controllers
 
 
         }
-
 
         [Authorize]
         [HttpGet]
@@ -327,6 +328,126 @@ namespace P2WebMVC.Controllers
         }
 
 
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword(ForgotPassView model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.errorMessage = "Please provide a valid email address.";
+                    return View();
+                }
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+
+                if (user == null)
+                {
+                    ViewBag.errorMessage = "No user found with the provided email address.";
+                    return View();
+                }
+
+                var resetToken = Guid.NewGuid().ToString();
+   
+                user.ResetPassToken = resetToken;
+                user.ResetPassTokenExpiry = DateTime.UtcNow.AddHours(1);
+                await dbContext.SaveChangesAsync();
+
+            
+
+                await emailService.SendEmailAsync(model.Email,
+      "Reset Your Password - Australasia Apparels",
+      $@"
+        <html>
+            <body>
+                <p>Dear user,</p>
+                <p>We received a request to reset your password. Please click the link below to reset it:</p>
+                <p>
+                    <a href='https://australasia-apparels.com/user/verifyPasswordReset?token={resetToken}'>
+                        Reset Your Password
+                    </a>
+                </p>
+                <p>If you did not request a password reset, please ignore this email or contact our support team.</p>
+                <br />
+                <p>Best regards,<br />Australasia Apparels Team</p>
+            </body>
+        </html>", true);
+
+
+                ViewBag.successMessage = "A password reset link has been sent to your email.";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.errorMessage = ex.Message;
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> VerifyPasswordReset(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                ViewBag.errorMessage = "Invalid or missing token.";
+                return View("Error");
+            }
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.ResetPassToken == token);
+
+            if (user == null)
+            {
+                ViewBag.errorMessage = "This password reset link is invalid or has expired.";
+                return View("Error");
+            }
+
+            ViewBag.Token = token;
+            return View(); // Return the view with a reset password form
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword(PasswordResetView model, string token)
+        {
+            if ( model.Password != model.ConfirmPassword)
+            {
+                ViewBag.ErrorMessage = "Password doesnot match!";
+                return View("VerifyPasswordReset");
+            }
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.ResetPassToken == token);
+
+            if (user == null)
+            {
+                ViewBag.errorMessage = "This password reset link is invalid or has expired.";
+                return View("Error");
+            }
+
+            user.Password =  BCrypt.Net.BCrypt.HashPassword(model.Password);
+            user.ResetPassToken = null;
+            user.ResetPassTokenExpiry = null;
+            await dbContext.SaveChangesAsync();
+
+            TempData["successMessage"] = "Your password has been successfully reset.";
+            return RedirectToAction("Login"); // Or redirect to login page
+        }
+
+        [HttpPost]
+        public  async Task <ActionResult> Subscribe (NewsLetter model){
+
+            
+            await dbContext.NewsLetters.AddAsync(model);
+            await dbContext.SaveChangesAsync();
+
+            TempData["Message"] = "You have been succesfully added to newsletter subscription!";
+            return RedirectToAction("Index", "Home");
+
+        }
 
 
 
@@ -336,7 +457,7 @@ namespace P2WebMVC.Controllers
             HttpContext.Response.Cookies.Delete("AuthorizationToken");
             HttpContext.Session.Clear();
 
-            TempData["LogoutMessage"] = "You have been logged out successfully.";
+            TempData["Message"] = "You have been logged out successfully!";
             return RedirectToAction("Index", "Home");
         }
 

@@ -52,16 +52,17 @@ public class HomeController : Controller
     {
         try
         {
-             Guid? userId = HttpContext.Items["UserId"] as Guid?;
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
             // fetch products from the database
 
             var user = await dbContext.Users.FindAsync(userId);
 
-            
+
             var products = await dbContext.Products.Where(p => p.IsActive).ToListAsync();
 
-            if(user == null || products ==null){
+            if (user == null || products == null)
+            {
 
                 ViewBag.ErrorMessage = "Something Went Wrong . Try again after Sometime";
                 return View("Error");
@@ -102,6 +103,29 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    public IActionResult ShippingInfo()
+    {
+        return View();
+    }
+
+
+    public IActionResult ReturnsAndExchange()
+    {
+        return View();
+    }
+
+
+    public IActionResult TermsConditions()
+    {
+        return View();
+    }
+
+    public IActionResult PrivacyPolicy()
+    {
+        return View();
+    }
+
 
 
 

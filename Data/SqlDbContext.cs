@@ -20,6 +20,7 @@ public class SqlDbContext : DbContext
         public DbSet<Order> Orders { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<NewsLetter> NewsLetters { get; set; }
 
 
 
