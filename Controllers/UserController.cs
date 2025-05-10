@@ -337,7 +337,7 @@ namespace P2WebMVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewBag.errorMessage = "Please provide a valid email address.";
+                    ViewBag.ErrorMessage = "Please provide a valid email address.";
                     return View();
                 }
 
@@ -345,7 +345,7 @@ namespace P2WebMVC.Controllers
 
                 if (user == null)
                 {
-                    ViewBag.errorMessage = "No user found with the provided email address.";
+                    ViewBag.ErrorMessage = "No user found with the provided email address.";
                     return View();
                 }
 
@@ -365,7 +365,7 @@ namespace P2WebMVC.Controllers
                 <p>Dear user,</p>
                 <p>We received a request to reset your password. Please click the link below to reset it:</p>
                 <p>
-                    <a href='https://australasia-apparels.com/user/verifyPasswordReset?token={resetToken}'>
+                    <a href='https://australasia-apparels.shop/user/verifyPasswordReset?token={resetToken}'>
                         Reset Your Password
                     </a>
                 </p>
@@ -376,12 +376,12 @@ namespace P2WebMVC.Controllers
         </html>", true);
 
 
-                ViewBag.successMessage = "A password reset link has been sent to your email.";
+                ViewBag.SuccessMessage = "A password reset link has been sent to your email.";
                 return View();
             }
             catch (Exception ex)
             {
-                ViewBag.errorMessage = ex.Message;
+                ViewBag.ErrorMessage = ex.Message;
                 return View();
             }
         }
@@ -391,16 +391,16 @@ namespace P2WebMVC.Controllers
         {
             if (string.IsNullOrEmpty(token))
             {
-                ViewBag.errorMessage = "Invalid or missing token.";
-                return View("Error");
+                ViewBag.ErrorMessage = "Invalid or missing token.";
+                return View("ForgotPassword");
             }
 
             var user = await dbContext.Users.FirstOrDefaultAsync(u => u.ResetPassToken == token);
 
             if (user == null)
             {
-                ViewBag.errorMessage = "This password reset link is invalid or has expired.";
-                return View("Error");
+                ViewBag.ErrorMessage = "This password reset link has expired. Kindly Try again ! ";
+                return View("ForgotPassword");
             }
 
             ViewBag.Token = token;
@@ -420,8 +420,8 @@ namespace P2WebMVC.Controllers
 
             if (user == null)
             {
-                ViewBag.errorMessage = "This password reset link is invalid or has expired.";
-                return View("Error");
+                ViewBag.ErrorMessage = "This password reset link is invalid or has expired.";
+                return View("VerifyPasswordReset");
             }
 
             user.Password =  BCrypt.Net.BCrypt.HashPassword(model.Password);
