@@ -46,3 +46,18 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 } */
+
+
+ .card-hover:hover[b-sr9bc0vv8n] {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+    }
+
+    .fade-in[b-sr9bc0vv8n] {
+        animation: fadeIn-b-sr9bc0vv8n 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn-b-sr9bc0vv8n {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }

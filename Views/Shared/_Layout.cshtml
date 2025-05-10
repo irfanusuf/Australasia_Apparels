@@ -1,4 +1,5 @@
-﻿@inject P2WebMVC.Data.SqlDbContext dbContext
+﻿@using Microsoft.EntityFrameworkCore
+@inject P2WebMVC.Data.SqlDbContext dbContext
 
 @{
     var userId = Context.Session.GetString("UserId");
@@ -12,10 +13,10 @@
 
     if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
     {
-        user = dbContext.Users.FirstOrDefault(u => u.UserId == parsedUserId);
-        cartCount = dbContext.Carts
+        user =  await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == parsedUserId);
+        cartCount = await dbContext.Carts
         .Where(c => c.UserId == parsedUserId)
-        .Sum(c => c.CartItems.Count);
+        .SumAsync(c => c.CartItems.Count);
     }
 }
 

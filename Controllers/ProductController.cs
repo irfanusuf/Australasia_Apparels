@@ -69,8 +69,6 @@ namespace P2WebMVC.Controllers
 
         }
 
-
-
         [HttpGet]
         public async Task<ActionResult> Details(Guid ProductId)
         {
@@ -94,10 +92,6 @@ namespace P2WebMVC.Controllers
           
             }
         }
-
-
-
-
 
 
         // check add to cart for differnet color and sizes

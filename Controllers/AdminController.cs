@@ -31,20 +31,27 @@ namespace P2WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-           Guid? userId = HttpContext.Items["UserId"] as Guid?;
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            var user =  await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
-           if(user?.Role != Role.Admin){
-            return RedirectToAction("Login" , "User");
-           } 
+            if (user?.Role != Role.Admin)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            var totalRevenue = await dbContext.Orders.SumAsync(o => o.TotalPrice);
+
             var usersCount = await dbContext.Users.CountAsync();
             var ordersCount = await dbContext.Orders.CountAsync();
             var productsCount = await dbContext.Products.CountAsync();
 
+
             ViewBag.TotalUsers = usersCount;
             ViewBag.TotalOrders = ordersCount;
             ViewBag.TotalProducts = productsCount;
+            ViewBag.TotalRevenue = totalRevenue;
+            ViewBag.Username =  user.Username;
 
 
             return View();
@@ -94,8 +101,8 @@ namespace P2WebMVC.Controllers
 
                 await dbContext.Products.AddAsync(product);
                 await dbContext.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Product Created Successfully";
-                return RedirectToAction("Index");
+                TempData["Message"] = "Product Created Successfully";
+                return RedirectToAction("ProductList");
 
 
             }
@@ -103,7 +110,7 @@ namespace P2WebMVC.Controllers
             {
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
-          
+
             }
 
         }
@@ -119,6 +126,21 @@ namespace P2WebMVC.Controllers
                 {
                     Products = products
                 };
+
+                // var productDateGroups = await dbContext.Products
+                //     .Where(p => !p.IsDeleted)
+                //     .GroupBy(p => p.CreatedAt.Date)
+                //     .Select(g => new
+                //     {
+                //         Date = g.Key,
+                //         Count = g.Count()
+                //     })
+                //     .OrderBy(g => g.Date)
+                //     .ToListAsync();
+
+                // ViewBag.ProductChartData = productDateGroups;
+
+
                 return View(viewModel);
             }
             catch (System.Exception ex)
@@ -131,12 +153,78 @@ namespace P2WebMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> OrderList()
+        public async Task<ActionResult> DeleteProduct(Guid ProductId)
         {
 
+            var product = await dbContext.Products.FindAsync(ProductId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.IsActive = false;
+            product.IsDeleted = true;
+
+            product.UpdatedAt = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+
+
+            TempData["Message"] = " Production deletion Succesfull!";
+            return RedirectToAction(nameof(ProductList));
+
+        }
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> EditProduct(Guid ProductId)
+        {
+            var product = await dbContext.Products.FindAsync(ProductId);
+
+
+            ViewBag.CategoryList = new SelectList(Enum.GetValues(typeof(ProductCategory)));
+            return View(product);
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> EditProduct(Product model, Guid ProductId)
+        {
+            var product = await dbContext.Products.FindAsync(ProductId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Update properties
+            product.Name = model.Name;
+            product.Brand = model.Brand;
+            product.Description = model.Description;
+            product.Price = model.Price;
+            product.Discount = model.Discount;
+            product.Stock = model.Stock;
+            product.Color = model.Color;
+            product.Size = model.Size;
+            product.Category = model.Category;
+            product.SubCategory = model.SubCategory;
+            product.UpdatedAt = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+
+            TempData["Message"] = "Product editing successful!";
+            return RedirectToAction(nameof(ProductList));
+        }
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> OrderList()
+        {
             try
             {
-                var orders = await dbContext.Orders.ToListAsync();
+                var orders = await dbContext.Orders.Include(o=> o.Address).ToListAsync();
 
                 var viewModel = new OrderViewModel
                 {
@@ -158,8 +246,11 @@ namespace P2WebMVC.Controllers
         {
 
             try
-            { 
-                var users = await dbContext.Users.ToListAsync();
+            {
+                var users = await dbContext.Users
+                    .Include(u => u.Orders)
+                    .Include(u => u.Cart)
+                    .ToListAsync();
 
                 var viewModel = new UserViewModel
                 {

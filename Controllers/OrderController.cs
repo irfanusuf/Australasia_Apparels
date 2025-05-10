@@ -205,54 +205,119 @@ namespace P2WebMVC.Controllers
                     RedirectToAction("Login", "User");
                 }
 
-                var order = await dbContext.Orders.Include(o => o.Address).FirstOrDefaultAsync(o => o.OrderId == OrderId);
+                var order = await dbContext.Orders
+                    .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                    .Include(o => o.Address)
+                    .FirstOrDefaultAsync(o => o.OrderId == OrderId);
 
+
+                var productRows = "";
+
+                if (order?.OrderItems != null)
+                {
+                    foreach (var item in order.OrderItems)
+                    {
+                        productRows += $@"
+                          <tr>
+                             <td>{item.Product.Name}</td>
+                             <td>{item.Quantity}</td>
+                             <td>₹ {item.Product.Price:F2}</td>
+                             <td>₹ {item.Quantity * item.Product.Price:F2}</td>
+                         </tr>";
+                    }
+                }
 
                 var htmlBody = $@"
-                        <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <style>
     body {{
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }}
     .container {{
-      max-width: 600px;
-      margin: 30px auto;
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }}
+    h2 {{
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }}
+    table, th, td {{
+      border: 1px solid #ddd;
+    }}
+    th, td {{
+      padding: 12px;
+      text-align: left;
+    }}
+    th {{
+      background-color: #007bff;
+      color: white;
+    }}
+    .summary {{
+      text-align: right;
+      margin-top: 20px;
     }}
     .btn {{
       display: inline-block;
       padding: 12px 24px;
-      margin-top: 20px;
-      background-color: #007bff;
-      color: #ffffff !important;
+      border: 1px solid #007bff;
+      color: white;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 5px;
+      text-align: center;
     }}
     .footer {{
       font-size: 12px;
-      color: #777;
-      margin-top: 30px;
+      color: #999;
+      text-align: center;
+      margin-top: 40px;
     }}
   </style>
 </head>
 <body>
   <div class='container'>
-    <h2>Order Verification</h2>
-    <p>Hello {order?.Address?.FirstName ?? "Customer"},</p>
-    <p>Thank you for shopping with <strong>Australasia Apparels</strong>.</p>
-    <p>Please verify your order by clicking the button below:</p>
+    <h2>Order Invoice & Verification</h2>
+    <p><strong>Customer:</strong> {order?.Address?.FirstName} {order?.Address?.LastName}<br/>
+       <strong>Email:</strong> {user?.Email}<br/>
+       <strong>Order ID:</strong> {order?.OrderId}<br/>
+       <strong>Date:</strong> {order?.DateCreated?.ToString("dd MMM yyyy")}<br/>
+       <strong>Address:</strong> {order?.Address?.Street}, {order?.Address?.City}, {order?.Address?.Pincode}, {order?.Address?.Country}
+    </p>
 
-    <a href='https://australasia-apparels.shop/order/verifiedByEmail?OrderId={OrderId}' class='btn'>Verify My Order</a>
+    <table>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+      </tr>
+      {productRows}
+    </table>
 
-    <p>If you have any questions or need help, feel free to <a href='https://australasia-apparels.shop/support'>contact our support team</a>.</p>
+    <div class='summary'>
+      <p><strong>Amount:</strong> $ {order?.TotalPrice:F2}</p>
+      <p><strong>Shipping:</strong> $ 5.00 </p>
+      <p><strong>Total Amount:</strong> $ {order?.TotalPrice + 5}</p>
+    </div>
+
+    <div style='text-align:center; margin-top: 30px;'>
+      <a href='https://australasia-apparels.shop/order/verifiedByEmail?OrderId={OrderId}' class='btn'>Verify My Order</a>
+    </div>
 
     <p class='footer'>If you didn’t place this order, you can safely ignore this email.</p>
   </div>
@@ -260,18 +325,28 @@ namespace P2WebMVC.Controllers
 </html>";
 
 
-                await mailService.SendEmailAsync(user?.Email, "Order Verification ", htmlBody, true);
+
+
+                if (!string.IsNullOrEmpty(user?.Email))
+                {
+                    await mailService.SendEmailAsync(user.Email, "Order Verification ", htmlBody, true);
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "User email is not available.";
+                    return View("Error");
+                }
 
 
 
-                TempData["EmailMessage"] = "Mail sent to your Mail Id . Kindly check Your mail box and search for our mail and press verify!";
+                TempData["Message"] = "Mail sent to your Mail Id . Kindly check Your mail box and search for our mail and press verify!";
                 return RedirectToAction("Verify", new { order?.OrderId });
 
             }
             catch (System.Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Verify", new { OrderId });
 
             }
 

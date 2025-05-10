@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using P2WebMVC.Data;
 using P2WebMVC.Interfaces;
 using P2WebMVC.Models;
@@ -289,7 +287,6 @@ namespace P2WebMVC.Controllers
 
         }
 
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAddress(Address address)
@@ -326,7 +323,6 @@ namespace P2WebMVC.Controllers
             }
 
         }
-
 
         [HttpGet]
         public ActionResult ForgotPassword()
@@ -448,8 +444,6 @@ namespace P2WebMVC.Controllers
             return RedirectToAction("Index", "Home");
 
         }
-
-
 
         [HttpGet]
         public ActionResult Logout()
