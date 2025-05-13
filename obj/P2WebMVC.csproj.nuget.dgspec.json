@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/irfanusuf/Australasia_Apparels/P2WebMVC.csproj": {}
+    "/home/irfan_usuf/Projects/Australasia_Apparels/P2WebMVC.csproj": {}
   },
   "projects": {
-    "/home/irfanusuf/Australasia_Apparels/P2WebMVC.csproj": {
+    "/home/irfan_usuf/Projects/Australasia_Apparels/P2WebMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/irfanusuf/Australasia_Apparels/P2WebMVC.csproj",
+        "projectUniqueName": "/home/irfan_usuf/Projects/Australasia_Apparels/P2WebMVC.csproj",
         "projectName": "P2WebMVC",
-        "projectPath": "/home/irfanusuf/Australasia_Apparels/P2WebMVC.csproj",
-        "packagesPath": "/home/irfanusuf/.nuget/packages/",
-        "outputPath": "/home/irfanusuf/Australasia_Apparels/obj/",
+        "projectPath": "/home/irfan_usuf/Projects/Australasia_Apparels/P2WebMVC.csproj",
+        "packagesPath": "/home/irfan_usuf/.nuget/packages/",
+        "outputPath": "/home/irfan_usuf/Projects/Australasia_Apparels/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/irfanusuf/.nuget/NuGet/NuGet.Config"
+          "/home/irfan_usuf/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

@@ -155,7 +155,7 @@ namespace P2WebMVC.Controllers
         {
             Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            var order = await dbContext.Orders.Include(o => o.Address).ThenInclude(o => o.Buyer).FirstOrDefaultAsync(o => o.OrderId == OrderId); // finding order using orderId
+            var order = await dbContext.Orders.Include(o => o.Address).Include(o => o.Buyer).FirstOrDefaultAsync(o => o.OrderId == OrderId); // finding order using orderId
 
             if (order == null)
             {
@@ -191,24 +191,14 @@ namespace P2WebMVC.Controllers
 
         public async Task<IActionResult> SendEmail(Guid OrderId)
         {
-
-
             try
             {
-
-                Guid? userId = HttpContext.Items["UserId"] as Guid?;
-
-                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-
-                if (user == null)
-                {
-                    RedirectToAction("Login", "User");
-                }
 
                 var order = await dbContext.Orders
                     .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                     .Include(o => o.Address)
+                    .Include(o => o.Buyer)
                     .FirstOrDefaultAsync(o => o.OrderId == OrderId);
 
 
@@ -220,10 +210,10 @@ namespace P2WebMVC.Controllers
                     {
                         productRows += $@"
                           <tr>
-                             <td>{item.Product.Name}</td>
-                             <td>{item.Quantity}</td>
-                             <td>₹ {item.Product.Price:F2}</td>
-                             <td>₹ {item.Quantity * item.Product.Price:F2}</td>
+                             <td>{item?.Product?.Name}</td>
+                             <td>{item?.Quantity}</td>
+                             <td>$ {item?.Product?.Price:F2}</td>
+                             <td>$ {item?.Quantity * item?.Product?.Price:F2}</td>
                          </tr>";
                     }
                 }
@@ -293,7 +283,6 @@ namespace P2WebMVC.Controllers
   <div class='container'>
     <h2>Order Invoice & Verification</h2>
     <p><strong>Customer:</strong> {order?.Address?.FirstName} {order?.Address?.LastName}<br/>
-       <strong>Email:</strong> {user?.Email}<br/>
        <strong>Order ID:</strong> {order?.OrderId}<br/>
        <strong>Date:</strong> {order?.DateCreated?.ToString("dd MMM yyyy")}<br/>
        <strong>Address:</strong> {order?.Address?.Street}, {order?.Address?.City}, {order?.Address?.Pincode}, {order?.Address?.Country}
@@ -325,16 +314,11 @@ namespace P2WebMVC.Controllers
 </html>";
 
 
+                var email = order?.Buyer?.Email;
 
-
-                if (!string.IsNullOrEmpty(user?.Email))
+                if (!string.IsNullOrEmpty(email))
                 {
-                    await mailService.SendEmailAsync(user.Email, "Order Verification ", htmlBody, true);
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = "User email is not available.";
-                    return View("Error");
+                    await mailService.SendEmailAsync(email, "Order Verification", htmlBody, true);
                 }
 
 
@@ -362,20 +346,20 @@ namespace P2WebMVC.Controllers
                 var order = await dbContext.Orders.FindAsync(OrderId);
                 if (order == null)
                 {
-                    ViewBag.ErrorMessage = "Order not found.";
-                    return View("Error");
+                    TempData["ErrorMessage"] = "Order Not Found!";
+                    return RedirectToAction("Verify", new { OrderId });
                 }
 
                 order.OrderStatus = OrderStatus.Verified;
                 await dbContext.SaveChangesAsync();
 
-                TempData["EmailMessage"] = "Email is SuccesFully Verified you can pay Now for your Order!";
+                TempData["Message"] = "Email is SuccesFully Verified you can pay Now for your Order!";
                 return RedirectToAction("Verify", new { order?.OrderId });
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Verify", new { OrderId });
             }
         }
 
@@ -389,8 +373,8 @@ namespace P2WebMVC.Controllers
                 var order = await dbContext.Orders.FindAsync(OrderId);
                 if (order == null)
                 {
-                    ViewBag.ErrorMessage = "Order not found.";
-                    return View("Error");
+                    TempData["ErrorMessage"] = "Order Not Found!";
+                    return RedirectToAction("Verify", new { OrderId });
                 }
 
                 order.OrderStatus = OrderStatus.InTransit;
@@ -402,8 +386,8 @@ namespace P2WebMVC.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Verify", new { OrderId });
             }
         }
 
@@ -416,8 +400,8 @@ namespace P2WebMVC.Controllers
                 var order = await dbContext.Orders.Include(o => o.Buyer).FirstOrDefaultAsync(o => o.OrderId == OrderId);
                 if (order == null)
                 {
-                    ViewBag.ErrorMessage = "Order not found.";
-                    return View("Error");
+                    TempData["ErrorMessage"] = "Order Not Found!";
+                    return RedirectToAction("Verify", new { OrderId });
                 }
 
                 string htmlBody = $@"
@@ -440,15 +424,21 @@ namespace P2WebMVC.Controllers
     </html>";
 
 
-                await mailService.SendEmailAsync(order?.Buyer?.Email, "Verify Order cancellation ", htmlBody, true);
+                var email = order?.Buyer?.Email;
+
+                if (!string.IsNullOrEmpty(email))
+                {
+                    await mailService.SendEmailAsync(email, "Verify Order cancellation ", htmlBody, true);
+                }
+
 
                 TempData["EmailMessage"] = "Your have request order cancellation . Kindly check your mail and verify order cancellation!";
-                return RedirectToAction("Verify", new { order?.OrderId });
+                return RedirectToAction("Verify", new { OrderId });
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Verify", new { OrderId });
             }
         }
 
@@ -463,20 +453,20 @@ namespace P2WebMVC.Controllers
                 var order = await dbContext.Orders.FindAsync(OrderId);
                 if (order == null)
                 {
-                    ViewBag.ErrorMessage = "Order not found.";
-                    return View("Error");
+                    TempData["ErrorMessage"] = "Order Not Found!";
+                    return RedirectToAction("Verify", new { OrderId });
                 }
 
                 order.OrderStatus = OrderStatus.Cancelled;
                 await dbContext.SaveChangesAsync();
 
                 TempData["EmailMessage"] = "Your order has been succesfully cancelled!";
-                return RedirectToAction("Verify", new { order?.OrderId });
+                return RedirectToAction("Verify", new { OrderId });
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Verify", new { OrderId });
             }
 
         }
