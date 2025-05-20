@@ -272,11 +272,6 @@ namespace P2WebMVC.Controllers
                     return View(viewModel);
                 }
 
-
-
-
-
-
             }
             catch (System.Exception ex)
             {
@@ -289,7 +284,7 @@ namespace P2WebMVC.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateAddress(Address address)
+        public async Task<IActionResult> CreateAddress(Address address , Guid CartId)
         {
 
             try
@@ -300,35 +295,66 @@ namespace P2WebMVC.Controllers
                     return RedirectToAction("Login", "User");
                 }
 
-                var availableAdderess = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
 
+                if (!ModelState.IsValid)
+                {
 
-                if (ModelState.IsValid)
+                    TempData["ErrorMessage"] = "All the  feilds with the * are required ";
+                    return RedirectToAction("CheckOut", "Order" , new{CartId});
+
+                }
+
+                var existingAddress = await dbContext.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
+
+                if (existingAddress == null)
                 {
                     address.UserId = (Guid)userId;
                     await dbContext.Addresses.AddAsync(address);
                     await dbContext.SaveChangesAsync();
-                    return RedirectToAction("CheckOut", "Order");
-                }
 
-                TempData["ErrorMessage"] = "Address updation un-successfull !";
-                return RedirectToAction("CheckOut", "Order");
+                    TempData["SuccessMessage"] = "Address created !";
+                    return RedirectToAction("CheckOut", "Order" , new{CartId});
+                }
+                else
+                {
+                    // update 
+                    existingAddress.FirstName = address.FirstName;
+                    existingAddress.LastName = address.LastName;
+                    existingAddress.Street = address.Street;
+                    existingAddress.City = address.City;
+                    existingAddress.State = address.State;
+                    existingAddress.Country = address.Country;
+                    existingAddress.Pincode = address.Pincode;
+                    existingAddress.Phone = address.Phone;
+
+                    await dbContext.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Address updation successfull !";
+                    return RedirectToAction("CheckOut", "Order" ,  new {CartId});
+                }
 
             }
             catch (System.Exception ex)
             {
 
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                Console.WriteLine(ex.Message);
+                TempData["ErrorMessage"] = "Something Went Wrong try Agin After Sometime !";
+                return RedirectToAction("CheckOut", "Order" , new {CartId});
+
             }
 
         }
+
+
+
 
         [HttpGet]
         public ActionResult ForgotPassword()
         {
             return View();
         }
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> ForgotPassword(ForgotPassView model)
@@ -350,12 +376,12 @@ namespace P2WebMVC.Controllers
                 }
 
                 var resetToken = Guid.NewGuid().ToString();
-   
+
                 user.ResetPassToken = resetToken;
                 user.ResetPassTokenExpiry = DateTime.UtcNow.AddHours(1);
                 await dbContext.SaveChangesAsync();
 
-            
+
 
                 await emailService.SendEmailAsync(model.Email,
       "Reset Your Password - Australasia Apparels",
@@ -410,7 +436,7 @@ namespace P2WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> ResetPassword(PasswordResetView model, string token)
         {
-            if ( model.Password != model.ConfirmPassword)
+            if (model.Password != model.ConfirmPassword)
             {
                 ViewBag.ErrorMessage = "Password doesnot match!";
                 return View("VerifyPasswordReset");
@@ -424,7 +450,7 @@ namespace P2WebMVC.Controllers
                 return View("VerifyPasswordReset");
             }
 
-            user.Password =  BCrypt.Net.BCrypt.HashPassword(model.Password);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
             user.ResetPassToken = null;
             user.ResetPassTokenExpiry = null;
             await dbContext.SaveChangesAsync();
@@ -434,9 +460,10 @@ namespace P2WebMVC.Controllers
         }
 
         [HttpPost]
-        public  async Task <ActionResult> Subscribe (NewsLetter model){
+        public async Task<ActionResult> Subscribe(NewsLetter model)
+        {
 
-            
+
             await dbContext.NewsLetters.AddAsync(model);
             await dbContext.SaveChangesAsync();
 

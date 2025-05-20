@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("P2WebMVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6253f4d694686861016c66da554209d070311ab8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0880807dabd07a2b98871283fb00b1ded545b5f4")]
 [assembly: System.Reflection.AssemblyProductAttribute("P2WebMVC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("P2WebMVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

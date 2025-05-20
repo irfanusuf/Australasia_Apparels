@@ -32,7 +32,7 @@
             <div class="col-xl-8 ftco-animate">
 
 
-                <form method="post" asp-controller="User" asp-action="CreateAddress"  class="billing-form">
+                <form method="post" asp-controller="User" asp-action="CreateAddress"  asp-route-CartId = "@Model?.Cart?.CartId" class="billing-form">
 
                     <h3 class="mb-4 billing-heading">Billing Details</h3>
                     <div class="row align-items-end">
@@ -122,6 +122,13 @@
                         {
                             <div class="p-2">
                                 <p class="text-danger">@TempData["ErrorMessage"]</p>
+                            </div>
+                        }
+
+                          @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="p-2">
+                                <p class="text-success">@TempData["SuccessMessage"]</p>
                             </div>
                         }
 

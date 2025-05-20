@@ -15,17 +15,14 @@ namespace P2WebMVC.Controllers
         // GET: OrderController
         private readonly SqlDbContext dbContext;
         private readonly RazorPayService razorpayService;
-
         private readonly IMailService mailService;
 
 
         public OrderController(SqlDbContext dbContext, IMailService mailService)
         {
-
             this.dbContext = dbContext;
             this.mailService = mailService;
             razorpayService = new RazorPayService();
-
         }
 
 
@@ -37,8 +34,6 @@ namespace P2WebMVC.Controllers
             try
             {
                 Guid? userId = HttpContext.Items["UserId"] as Guid?;
-
-
 
 
                 var cart = await dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.CartId == CartId); // finding cart of user 
@@ -74,8 +69,6 @@ namespace P2WebMVC.Controllers
             }
 
         }
-
-
 
         [Authorize]
         [HttpPost]
@@ -144,10 +137,7 @@ namespace P2WebMVC.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
             }
-
-
         }
-
 
         [Authorize]
         [HttpGet]
@@ -184,11 +174,8 @@ namespace P2WebMVC.Controllers
             return View(viewModel);
         }
 
-
-
         [Authorize]
         [HttpGet]
-
         public async Task<IActionResult> SendEmail(Guid OrderId)
         {
             try
@@ -336,7 +323,6 @@ namespace P2WebMVC.Controllers
 
         }
 
-
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> VerifiedByEMail(Guid OrderId)
@@ -362,7 +348,6 @@ namespace P2WebMVC.Controllers
                 return RedirectToAction("Verify", new { OrderId });
             }
         }
-
 
         [Authorize]
         [HttpGet]
@@ -441,7 +426,6 @@ namespace P2WebMVC.Controllers
                 return RedirectToAction("Verify", new { OrderId });
             }
         }
-
 
         [Authorize]
         [HttpGet]
