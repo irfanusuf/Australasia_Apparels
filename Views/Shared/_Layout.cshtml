@@ -65,6 +65,7 @@
             color: white !important;
             transition: 0.2s ease-in-out;
         }
+
     </style>
 
 </head>
@@ -80,12 +81,16 @@
                         <div class="col-md pr-4 d-flex topper align-items-center">
                             <div class="icon mr-2 d-flex justify-content-center align-items-center"><span
                                     class="icon-phone2"></span></div>
-                            <span class="text">+ 9456797875</span>
+                            <span class="text">+61 56797 87521</span>
                         </div>
                         <div class="col-md pr-4 d-flex topper align-items-center">
                             <div class="icon mr-2 d-flex justify-content-center align-items-center"><span
                                     class="icon-paper-plane"></span></div>
-                            <span class="text">shop@Australasia.com</span>
+                            <span class="text">
+                                <a href="mailto:info@Australasia_apparels.com" style="color: inherit; text-decoration: none;">
+                                    info@Australasia_apparels.com
+                                </a>
+                            </span>
                         </div>
                         <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
                             <span class="text">3-7 Business days delivery &amp; Free Returns</span>
@@ -100,7 +105,21 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
         <div class="container">
-            <a class="navbar-brand" asp-controller="home" asp-action="index">Australasia Apparels</a>
+
+            
+
+          @if (user == null)
+                    {
+                        <a class="navbar-brand" asp-controller="home" asp-action="index">Australasia Apparels</a>
+                    }
+                    else
+                    {
+                        <a class="navbar-brand" asp-controller="home" asp-action="userIndex">Australasia Apparels</a>
+
+                    }
+
+
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
                 aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="oi oi-menu"></span> Menu
@@ -111,33 +130,33 @@
 
                     @if (user == null)
                     {
-                        <li class="nav-item active"><a asp-controller="home" asp-action="index" class="nav-link">Home</a>
+                        <li class="nav-item active"><a asp-controller="home" asp-action="index" class="nav-link"  style="font-size: 12px; font-weight: 600;">Home</a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item active"><a asp-controller="home" asp-action="UserIndex" class="nav-link">Home</a>
+                        <li class="nav-item active"><a asp-controller="home" asp-action="UserIndex" class="nav-link"  style="font-size: 12px; font-weight: 600;" >Home</a>
                         </li>
 
                     }
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px; font-weight: 600;">
                             Shop
-                        </a>
+                        </a> 
 
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" asp-controller="product" asp-action="index"
+                            <a class="dropdown-item  " style="font-size: 12px; font-weight: 600;" asp-controller="product" asp-action="index"
                                 asp-route-category="all">All products</a>
-                            <a class="dropdown-item" asp-controller="product" asp-action="index"
+                            <a class="dropdown-item " style="font-size: 12px; font-weight: 600;" asp-controller="product" asp-action="index"
                                 asp-route-category="men">Men</a>
-                            <a class="dropdown-item" asp-controller="product" asp-action="index"
+                            <a class="dropdown-item " style="font-size: 12px; font-weight: 600;" asp-controller="product" asp-action="index"
                                 asp-route-category="women">Women</a>
-                            <a class="dropdown-item" asp-controller="product" asp-action="index"
+                            <a class="dropdown-item " style="font-size: 12px; font-weight: 600;" asp-controller="product" asp-action="index"
                                 asp-route-category="kids">Kids</a>
-                            <a class="dropdown-item" asp-controller="product" asp-action="index"
+                            <a class="dropdown-item "  style="font-size: 12px; font-weight: 600;" asp-controller="product" asp-action="index"
                                 asp-route-category="accessories">Accessories</a>
                         </div>
                     </li>
@@ -145,9 +164,9 @@
 
 
 
-                    <li class="nav-item"><a asp-controller="home" asp-action="about" class="nav-link">About Us</a></li>
-                    <li class="nav-item"><a href="/" class="nav-link">Catalog</a></li>
-                    <li class="nav-item"><a asp-controller="home" asp-action="contact" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a asp-controller="home" style="font-size: 12px; font-weight: 600;" asp-action="about" class="nav-link ">About Us</a></li>
+                    <li class="nav-item" ><a href="/" class="nav-link " style="font-size: 12px; font-weight: 600;">Catalog</a></li>
+                    <li class="nav-item"><a  style="font-size: 12px; font-weight: 600;" asp-controller="home" asp-action="contact" class="nav-link ">Contact</a></li>
 
                     <li class="nav-item">
                         @* <a href="#" class="nav-link" data-toggle="modal" data-target="#loginModal">
@@ -159,20 +178,20 @@
                         @if (user == null)
                         {
                             <!-- User not logged in -->
-                            <a asp-controller="User" asp-action="Login" class="nav-link">
-                                <span class="icon-user" style="font-size: 14px;"></span> Login
+                            <a asp-controller="User" asp-action="Login" class="nav-link "  style="font-size: 12px; font-weight: 600;">
+                                <span class="icon-user" ></span> Login
                             </a>
                         }
                         else
                         {
                             <!-- User is logged in -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            <a class="nav-link dropdown-toggle" style="font-size: 12px; font-weight: 600;" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="icon-user" style="font-size: 14px;"></span> @user.Username
+                                <span class="icon-user fon_increase" style="font-size: 14px;"></span> @user.Username
                             </a>
                             <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                <a asp-controller="User" asp-action="Logout" class="dropdown-item">Logout</a>
+                                <a asp-controller="User" asp-action="Logout" class="dropdown-item  " style="font-size: 14px; font-weight: 600;">Logout</a>
                             </div>
                         </li>
                     }
@@ -182,9 +201,9 @@
 
 
                     <li class="nav-item cta cta-colored">
-                        <a asp-controller="User" asp-action="Cart" class="nav-link">
+                        <a asp-controller="User" asp-action="Cart" class="nav-link" style="font-size: 12px; font-weight: 600;">
                             <span class="icon-shopping_cart" style="font-size: 14px;"></span> @if(cartCount > 0) {
-                               <span>[@cartCount]</span>
+                               <span>(@cartCount)</span>
                             }
                         </a>
                     </li>
@@ -326,7 +345,7 @@
 
                                 <li><a href="#">
                                 <span class="icon icon-phone"></span>
-                                <span class="text">+456789098787</span></a></li>
+                                <span class="text">+61 56797 87521</span></a></li>
 
 
                                 <li><a href="#">
