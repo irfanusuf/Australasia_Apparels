@@ -51,7 +51,7 @@ namespace P2WebMVC.Controllers
             ViewBag.TotalOrders = ordersCount;
             ViewBag.TotalProducts = productsCount;
             ViewBag.TotalRevenue = totalRevenue;
-            ViewBag.Username =  user.Username;
+            ViewBag.Username = user.Username;
 
 
             return View();
@@ -224,7 +224,7 @@ namespace P2WebMVC.Controllers
         {
             try
             {
-                var orders = await dbContext.Orders.Include(o=> o.Address).ToListAsync();
+                var orders = await dbContext.Orders.Include(o => o.Address).ToListAsync();
 
                 var viewModel = new OrderViewModel
                 {
@@ -268,7 +268,44 @@ namespace P2WebMVC.Controllers
         }
 
 
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddRemoveStoreKeeper(string Email)
+        {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+            TempData["ErrorMessage"] = "Email is required.";
+            return RedirectToAction("UserDb");
+            }
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == Email);
+            if (user == null)
+            {
+            TempData["ErrorMessage"] = "User not found.";
+            return RedirectToAction("UserDb");
+            }
+
+            if (user.Role == Role.StoreKeeper)
+            {
+            user.Role = Role.User;
+            TempData["SuccessMessage"] = "Store Keeper role removed from user.";
+            }
+            else
+            {
+            user.Role = Role.StoreKeeper;
+            TempData["SuccessMessage"] = "User promoted to Store Keeper.";
+            }
+
+            user.DateModified = DateTime.UtcNow;
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction("UserDb");
+        }
+
+
     }
+
 }
 
 

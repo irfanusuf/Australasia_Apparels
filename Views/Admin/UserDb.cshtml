@@ -3,6 +3,10 @@
     ViewData["Title"] = "Users Database";
 }
 
+
+
+
+
 <div class="container pt-4">
 
     <!-- Back Button -->
@@ -10,7 +14,45 @@
         <i class="bi bi-arrow-left-circle me-2"></i> Back to Dashboard
     </a>
 
+
+    @if (TempData["ErrorMessage"] != null)
+{
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+}
+
+
+    @if (TempData["SuccessMessage"] != null)
+{
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+}
+
+
     <h3 class="mb-3"><i class="bi bi-people-fill text-primary me-2"></i> Users Database</h3>
+
+    <p class="text-danger"> Note : If u want to add store keeper remember that he/she is registerd as user on this
+        platform</p>
+
+    <form method="post" asp-controller="admin" asp-action="AddRemoveStoreKeeper" class="d-flex align-items-center gap-2 mb-2">
+
+
+        <input type="email" name="Email" placeholder="Enter Email Id of store keeper"  required
+            style="width: 400px; border : none ; border-bottom: 1px solid black; margin-right: 10px;"   />
+
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-person-plus-fill me-2"></i> Add / Remove Store Keeper
+        </button>
+    </form>
+
 
     <div class="row mb-4">
         <div class="col-md-12 d-flex flex-wrap gap-3">
@@ -31,9 +73,8 @@
                 asp-controller="admin" asp-action="ProductList">
                 <i class="bi bi-box-seam-fill mr-2"></i> Products Database
             </a>
-
-
         </div>
+
     </div>
 
 
