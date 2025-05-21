@@ -4,253 +4,237 @@
     ViewData["Title"] = "Product Details";
 }
 
-
 <section class="ftco-section">
-
     <div class="container">
-
-
         <div class="row">
             <div class="col-lg-6 mb-5 ftco-animate">
-                <a href="@Model?.Product?.ImageUrl" class="image-popup"><img src="@Model?.Product?.ImageUrl" class="img-fluid"
-                        alt="Colorlib Template"></a>
+                <a href="@Model?.Product?.ImageUrl" class="image-popup">
+                    <img src="@Model?.Product?.ImageUrl" class="img-fluid" alt="Colorlib Template" />
+                </a>
             </div>
+
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
                 <h3>@Model?.Product?.Name</h3>
                 <div class="rating d-flex">
-
-
-                        <p class="text-left mr-4">
-                            @{
-                                var rating = (int)(Model?.Product?.Rating ?? 0);
-                                for (int i = 1; i <= 5; i++)
+                    <p class="text-left mr-4">
+                        @{
+                            var rating = (int)(Model?.Product?.Rating ?? 0);
+                            for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= rating)
                                 {
-                                    if (i <= rating)
-                                    {
-                                        <a href="#"><span class="ion-ios-star"></span></a>
-                                    }
-                                    else
-                                    {
-                                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                    }
+                                    <a href="#"><span class="ion-ios-star"></span></a>
+                                }
+                                else
+                                {
+                                    <a href="#"><span class="ion-ios-star-outline"></span></a>
                                 }
                             }
-                        </p>
-
+                        }
+                    </p>
 
                     <p class="text-left mr-4">
-                        <a  href="#" class="mr-2" style="color: #000;">@(Model?.Product?.Rating ?? 0 ) <span style="color: #bbb;"> Rating</span></a>
+                        <a href="#" class="mr-2" style="color: #000;">
+                            @(Model?.Product?.Rating ?? 0) <span style="color: #bbb;">Rating</span>
+                        </a>
                     </p>
+
                     <p class="text-left">
-                        <a href="#" class="mr-2" style="color: #000;">@(Model?.Product?.Sold  ?? 0 )<span style="color: #bbb;"> Sold</span></a>
+                        <a href="#" class="mr-2" style="color: #000;">
+                            @(Model?.Product?.Sold ?? 0) <span style="color: #bbb;">Sold</span>
+                        </a>
                     </p>
                 </div>
-                <p class="price"><span>$ @Model?.Product?.Price</span></p>
-                <p class="text-dark">@Model?.Product?.Description</p>
 
-                <form asp-controller="Product" asp-action="AddToCart" asp-route-ProductId = "@Model?.Product?.ProductId">
-                <div class="row mt-4">
-
-                  
-                    <div class="col-md-6">
-                        <div class="form-group d-flex">
-                            <div class="select-wrap">
-                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-
-                            @{
-                                var SizeString = Model?.Product?.Size ?? "";
-                                var SizeList = SizeString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                                           .Select(c => c.Trim())
-                                                           .Where(c => !string.IsNullOrWhiteSpace(c))
-                                                           .ToList();
-                            }
-                            <select name="Size" class="form-control">
-                                <option value="">Select Size</option>
-                                @foreach (var size in SizeList)
-                                {
-                                    <option value="@size">@size</option>
-                                }
-                            </select>
-                               
-                                
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-6">
-                        <div class="form-group d-flex">
-                            <div class="select-wrap">
-                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-
-                            @{
-                                var colorString = Model?.Product?.Color ?? "";
-                                var colorList = colorString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                                           .Select(c => c.Trim())
-                                                           .Where(c => !string.IsNullOrWhiteSpace(c))
-                                                           .ToList();
-                            }
-                            <select name="Color" class="form-control">
-                                <option value="">Select Color</option>
-                                @foreach (var color in colorList)
-                                {
-                                    <option value="@color">@color</option>
-                                }
-                            </select>
-                               
-                                
-                            </div>
-                        </div>
-                    </div>
-
-                    @* <div class="w-100"></div> *@
-                    <div class="input-group col-md-6 d-flex mb-3">
-
-
-                        <span class="input-group-btn mr-2">
-                            <button type="button" class="quantity-left-minus btn">
-                                <i class="ion-ios-remove"></i>
-                            </button>
+                <div class="pricing">
+                    <p class="price">
+                        <span class="mr-2 price-dc text-muted" style="text-decoration: line-through;">
+                            $@Model?.Product?.Price.ToString("0")
                         </span>
-
-                        <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="10" readonly>
-
-                        <span class="input-group-btn ml-2">
-                            <button type="button" class="quantity-right-plus btn" >
-                                <i class="ion-ios-add"></i>
-                            </button>
+                        <span class="price-sale">
+                            $@((Model?.Product?.Price != null && Model?.Product?.Discount != null)
+                                ? (Model.Product.Price - (Model.Product.Price * Model.Product.Discount / 100)).ToString("0.00")
+                                : "0.00")
                         </span>
-
-                        @section Scripts {
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    var quantityInput = document.getElementById('quantity');
-                                    var minusBtn = document.querySelector('.quantity-left-minus');
-                                    var plusBtn = document.querySelector('.quantity-right-plus');
-
-                                    minusBtn.addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        var current = parseInt(quantityInput.value) || 1;
-                                        var min = parseInt(quantityInput.min) || 1;
-                                        if (current > min) {
-                                            quantityInput.value = current - 1;
-                                        }
-                                    });
-
-                                    plusBtn.addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        var current = parseInt(quantityInput.value) || 1;
-                                        var max = parseInt(quantityInput.max) || 10;
-                                        if (current < max) {
-                                            quantityInput.value = current + 1;
-                                        }
-                                    });
-                                });
-                            </script>
-                        }
-                    </div>
-
-
-                    @* <div class="w-100"></div> *@
-                    <div class="col-md-12">
-                        <p style="color: #000;">@Model?.Product?.Stock pieces available</p>
-                    </div>
-
-                  
+                    </p>
                 </div>
 
+                <p class="text-dark" >@Model?.Product?.Description</p>
 
-                <p class="btn btn-black py-3 px-5" style="cursor:pointer;" onclick="this.closest('form').submit();">Add to Cart</p>
+                <form method="post" asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@Model?.Product?.ProductId">
+                    <div class="row mt-4">
+                        
+                        <div class="col-md-6">
+                            <div class="form-group d-flex">
+                                <div class="select-wrap">
+                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                    @{
+                                        var SizeString = Model?.Product?.Size ?? "";
+                                        var SizeList = SizeString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                                 .Select(c => c.Trim())
+                                                                 .Where(c => !string.IsNullOrWhiteSpace(c))
+                                                                 .ToList();
+                                    }
+                                    <select name="Size" class="form-control">
+                                        <option value="">Select Size</option>
+                                        @foreach (var size in SizeList)
+                                        {
+                                            <option value="@size">@size</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                
+                        <div class="col-md-6">
+                            <div class="form-group d-flex">
+                                <div class="select-wrap">
+                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                    @{
+                                        var colorString = Model?.Product?.Color ?? "";
+                                        var colorList = colorString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                                   .Select(c => c.Trim())
+                                                                   .Where(c => !string.IsNullOrWhiteSpace(c))
+                                                                   .ToList();
+                                    }
+                                    <select name="Color" class="form-control">
+                                        <option value="">Select Color</option>
+                                        @foreach (var color in colorList)
+                                        {
+                                            <option value="@color">@color</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                </form> 
+                        <div class="input-group col-md-6 d-flex mb-3">
+                            <span class="input-group-btn mr-2">
+                                <button type="button" class="quantity-left-minus btn">
+                                    <i class="ion-ios-remove"></i>
+                                </button>
+                            </span>
+                            <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="10" readonly />
+                            <span class="input-group-btn ml-2">
+                                <button type="button" class="quantity-right-plus btn">
+                                    <i class="ion-ios-add"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <p style="color: #000;">@Model?.Product?.Stock pieces available</p>
+                        </div>
+                    </div>
+
+                    <p class="btn btn-black py-3 px-5" style="cursor:pointer;" onclick="this.closest('form').submit();">
+                        Add to Cart
+                    </p>
+                </form>
 
 
-
-
-
-               
             </div>
         </div>
 
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h4>Add a Review</h4>
-            <form asp-controller="Product" asp-action="AddReview" asp-route-ProductId="@Model?.Product?.ProductId" method="post">
-                <div class="form-group">
-                    <label for="UserName">Your Name</label>
-                    <input type="text" class="form-control" id="UserName" name="UserName" required />
-                </div>
-                <div class="form-group">
-                    <label for="Rating">Rating</label>
-                    <select class="form-control" id="Rating" name="Rating" required>
-                        <option value="">Select Rating</option>
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="Comment">Comment</label>
-                    <textarea class="form-control" id="Comment" name="Comment" rows="1" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary"  disabled>Submit Review</button>
-            </form>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>Add a Review</h4>
+                <form asp-controller="Product" asp-action="AddReview" asp-route-ProductId="@Model?.Product?.ProductId" method="post">
+                    <div class="form-group">
+                        <label for="UserName">Your Name</label>
+                        <input type="text" class="form-control" id="UserName" name="UserName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Rating">Rating</label>
+                        <select class="form-control" id="Rating" name="Rating" required>
+                            <option value="">Select Rating</option>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Comment">Comment</label>
+                        <textarea class="form-control" id="Comment" name="Comment" rows="1" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" disabled>Submit Review</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-
-
-
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <h4>User Reviews</h4>
-            @{
-                // Dummy reviews list
-                var reviews = new List<dynamic>
-                {
-                    new { UserName = "Aryan", Rating = 5, Comment = "Great product! Highly recommended." },
-                    new { UserName = "Mikail", Rating = 4, Comment = "Good quality, fast shipping." },
-                    new { UserName = "Mehran", Rating = 3, Comment = "Average, but worth the price." }
-                };
-
-                if (reviews.Any())
-                {
-                    foreach (var review in reviews)
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h4>User Reviews</h4>
+                @{
+                    var reviews = new List<dynamic>
                     {
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">@review.UserName</h5>
-                                <div class="mb-2">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= review.Rating)
+                        new { UserName = "Aryan", Rating = 5, Comment = "Great product! Highly recommended." },
+                        new { UserName = "Mikail", Rating = 4, Comment = "Good quality, fast shipping." },
+                        new { UserName = "Mehran", Rating = 3, Comment = "Average, but worth the price." }
+                    };
+
+                    if (reviews.Any())
+                    {
+                        foreach (var review in reviews)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">@review.UserName</h5>
+                                    <div class="mb-2">
+                                        @for (int i = 1; i <= 5; i++)
                                         {
-                                            <span class="ion-ios-star"></span>
+                                            if (i <= review.Rating)
+                                            {
+                                                <span class="ion-ios-star"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="ion-ios-star-outline"></span>
+                                            }
                                         }
-                                        else
-                                        {
-                                            <span class="ion-ios-star-outline"></span>
-                                        }
-                                    }
+                                    </div>
+                                    <p class="card-text">@review.Comment</p>
                                 </div>
-                                <p class="card-text">@review.Comment</p>
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            No reviews yet.
                         </div>
                     }
                 }
-                else
-                {
-                    <div class="alert alert-info">
-                        No reviews yet.
-                    </div>
-                }
-            }
+            </div>
         </div>
     </div>
-
-
-    </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var quantityInput = document.getElementById('quantity');
+            var minusBtn = document.querySelector('.quantity-left-minus');
+            var plusBtn = document.querySelector('.quantity-right-plus');
+
+            minusBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var current = parseInt(quantityInput.value) || 1;
+                var min = parseInt(quantityInput.min) || 1;
+                if (current > min) {
+                    quantityInput.value = current - 1;
+                }
+            });
+
+            plusBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var current = parseInt(quantityInput.value) || 1;
+                var max = parseInt(quantityInput.max) || 10;
+                if (current < max) {
+                    quantityInput.value = current + 1;
+                }
+            });
+        });
+    </script>
+}

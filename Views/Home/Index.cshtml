@@ -120,7 +120,10 @@
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
 								<div class="pricing">
-									<p class="price"><span>$ @product.Price</span></p>
+									 <p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
+                                    </p>
 								</div>
 								<div class="rating">
 									<p class="text-right">
@@ -224,7 +227,10 @@
 							<div class="d-flex">
 								
 								<div class="pricing">
-									<p class="price"><span>$ @product.Price</span></p>
+								<p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
+                                    </p>
 								</div>
 
 
@@ -301,7 +307,10 @@
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
 								<div class="pricing">
-									<p class="price"><span>$ @product.Price</span></p>
+									 <p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
+                                    </p>
 								</div>
 								<div class="rating">
 									<p class="text-right">
@@ -367,7 +376,10 @@
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
 								<div class="pricing">
-									<p class="price"><span>$ @product.Price</span></p>
+										 <p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
+                                    </p>
 								</div>
 								<div class="rating">
 									<p class="text-right">
@@ -435,7 +447,10 @@
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
 								<div class="pricing">
-									<p class="price"><span>$ @product.Price</span></p>
+									 <p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
+                                    </p>
 								</div>
 								<div class="rating">
 									<p class="text-right">

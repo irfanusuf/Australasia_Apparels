@@ -45,8 +45,10 @@
                                     <div class="d-flex">
 
                                         <div class="pricing">
-                                            <p class="price"><span class="mr-2 price-dc">$ @product.Price</span><span
-                                                    class="price-sale">$ @product.Price</span></p>
+                                            <p class="price">
+                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
+                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString("0.00"))</span>
+                                            </p>
                                         </div>
                                         <div class="rating">
                                             <p class="text-right">
@@ -72,7 +74,7 @@
 
                                     
                                     <p class="bottom-area d-flex px-3">
-                                        <a asp-controller="product" asp-action="AddToCart" asp-route-ProductId = "@product.ProductId" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+                                        <a asp-controller="product" asp-action="AddToCart" asp-route-ProductId = "@product?.ProductId" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
                                                     class="ion-ios-add ml-1"></i></span></a>
                                         @* <a href="#" class="buy-now text-center py-2">Buy now<span><i
                                                     class="ion-ios-cart ml-1"></i></span></a> *@
