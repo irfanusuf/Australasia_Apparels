@@ -31,31 +31,41 @@ namespace P2WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-
-
-            if (user?.Role == Role.User)
+            try
             {
-                return RedirectToAction("Login", "User");
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                var totalRevenue = await dbContext.Orders.SumAsync(o => o.TotalPrice);
+
+                var usersCount = await dbContext.Users.CountAsync();
+                var ordersCount = await dbContext.Orders.CountAsync();
+                var productsCount = await dbContext.Products.CountAsync();
+
+
+                ViewBag.TotalUsers = usersCount;
+                ViewBag.TotalOrders = ordersCount;
+                ViewBag.TotalProducts = productsCount;
+                ViewBag.TotalRevenue = totalRevenue;
+                ViewBag.Username = user?.Username;
+
+                return View();
+            }
+            catch (System.Exception)
+            {
+
+                TempData["ErrorMessage"] = "Something Went Wrong!";
+                return View();
+
             }
 
-            var totalRevenue = await dbContext.Orders.SumAsync(o => o.TotalPrice);
-
-            var usersCount = await dbContext.Users.CountAsync();
-            var ordersCount = await dbContext.Orders.CountAsync();
-            var productsCount = await dbContext.Products.CountAsync();
-
-
-            ViewBag.TotalUsers = usersCount;
-            ViewBag.TotalOrders = ordersCount;
-            ViewBag.TotalProducts = productsCount;
-            ViewBag.TotalRevenue = totalRevenue;
-            ViewBag.Username = user?.Username;
-
-
-            return View();
         }
 
 
@@ -263,41 +273,53 @@ namespace P2WebMVC.Controllers
         public async Task<ActionResult> EditProduct(Product model, Guid ProductId)
         {
 
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-
-
-            if (user?.Role == Role.User)
+            try
             {
-                return RedirectToAction("Login", "User");
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+
+
+                var product = await dbContext.Products.FindAsync(ProductId);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                // Update properties
+                product.Name = model.Name;
+                product.Brand = model.Brand;
+                product.Description = model.Description;
+                product.Price = model.Price;
+                product.Discount = model.Discount;
+                product.Stock = model.Stock;
+                product.Color = model.Color;
+                product.Size = model.Size;
+                product.Category = model.Category;
+                product.SubCategory = model.SubCategory;
+                product.ReasonForDiscount = model.ReasonForDiscount;
+                product.UpdatedAt = DateTime.UtcNow;
+
+                await dbContext.SaveChangesAsync();
+
+                TempData["Message"] = "Product editing successful!";
+                return RedirectToAction(nameof(ProductList));
+            }
+            catch (System.Exception)
+            {
+
+                TempData["ErrorMessage"] = "Something Went Wrong";
+                return RedirectToAction(nameof(ProductList));
             }
 
-
-
-            var product = await dbContext.Products.FindAsync(ProductId);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            // Update properties
-            product.Name = model.Name;
-            product.Brand = model.Brand;
-            product.Description = model.Description;
-            product.Price = model.Price;
-            product.Discount = model.Discount;
-            product.Stock = model.Stock;
-            product.Color = model.Color;
-            product.Size = model.Size;
-            product.Category = model.Category;
-            product.SubCategory = model.SubCategory;
-            product.UpdatedAt = DateTime.UtcNow;
-
-            await dbContext.SaveChangesAsync();
-
-            TempData["Message"] = "Product editing successful!";
-            return RedirectToAction(nameof(ProductList));
         }
 
 
@@ -309,7 +331,6 @@ namespace P2WebMVC.Controllers
         {
             try
             {
-
                 Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
                 var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
@@ -329,10 +350,10 @@ namespace P2WebMVC.Controllers
                 };
                 return View(viewModel);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = "Something Went Wrong!";
+                return View();
 
             }
 
@@ -347,8 +368,6 @@ namespace P2WebMVC.Controllers
 
             try
             {
-
-
                 Guid? userId = HttpContext.Items["UserId"] as Guid?;
 
                 var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
@@ -371,10 +390,11 @@ namespace P2WebMVC.Controllers
                 };
                 return View(viewModel);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Error");
+                TempData["ErrorMessage"] = "Something Went Wrong!";
+                return View();
+
 
             }
 
@@ -389,52 +409,64 @@ namespace P2WebMVC.Controllers
         public async Task<IActionResult> AddRemoveStoreKeeper(string Email)
         {
 
-
-            Guid? userId = HttpContext.Items["UserId"] as Guid?;
-
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-
-            if (user?.Role != Role.Admin)
+            try
             {
-                TempData["ErrorMessage"] = "Only Admin can Add/Remove shopkeeper ";
-                 return RedirectToAction("UserDb");
 
-            }
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (user?.Role != Role.Admin)
+                {
+                    TempData["ErrorMessage"] = "Only Admin can Add/Remove shopkeeper ";
+                    return RedirectToAction("UserDb");
+
+                }
 
 
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                TempData["ErrorMessage"] = "Email is required.";
+                if (string.IsNullOrWhiteSpace(Email))
+                {
+                    TempData["Message"] = "Email is required.";
+                    return RedirectToAction("UserDb");
+                }
+
+                var storeKeeper = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == Email);
+
+                if (storeKeeper == null)
+                {
+                    TempData["ErrorMessage"] = "User not found.";
+                    return RedirectToAction("UserDb");
+                }
+
+                if (storeKeeper.Role == Role.StoreKeeper)
+                {
+                    storeKeeper.Role = Role.User;
+                    TempData["Message"] = $"Store Keeper {storeKeeper.Username} Removed!";
+                }
+                else if (storeKeeper.Role == Role.User)
+                {
+                    storeKeeper.Role = Role.StoreKeeper;
+                    TempData["Message"] = $"{storeKeeper.Username} promoted to Store Keeper.";
+                }
+                else if (storeKeeper.Role == Role.Admin)
+                {
+                    TempData["Message"] = "Admin already has store keeper rights";
+                }
+
+                storeKeeper.DateModified = DateTime.UtcNow;
+                await dbContext.SaveChangesAsync();
+
                 return RedirectToAction("UserDb");
             }
 
-            var storeKeeper = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == Email);
-
-            if (storeKeeper == null)
+            catch (System.Exception)
             {
-                TempData["ErrorMessage"] = "User not found.";
+
+                TempData["ErrorMessage"] = "Something Went Wrong!";
                 return RedirectToAction("UserDb");
             }
 
-            if (storeKeeper.Role == Role.StoreKeeper)
-            {
-                storeKeeper.Role = Role.User;
-                TempData["SuccessMessage"] = $"Store Keeper {storeKeeper.Username} Removed!";
-            }
-            else if (storeKeeper.Role == Role.User)
-            {
-                storeKeeper.Role = Role.StoreKeeper;
-                TempData["SuccessMessage"] = $"{storeKeeper.Username} promoted to Store Keeper.";
-            }
-            else if (storeKeeper.Role == Role.Admin)
-            {
-                TempData["SuccessMessage"] = "Admin already has store keeper rights";
-            }
 
-            storeKeeper.DateModified = DateTime.UtcNow;
-            await dbContext.SaveChangesAsync();
-
-            return RedirectToAction("UserDb");
         }
 
 

@@ -113,6 +113,11 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
+
+							   @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
+                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
+                                    }
+
 							<div class="overlay"></div>
 						</a>
 						<div class="text py-3 px-3">
@@ -219,6 +224,10 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
+								    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
+                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
+                                    }
+
 							<div class="overlay"></div>
 						</a>
 						<div class="text py-3 px-3">
@@ -300,6 +309,10 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
+								    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
+                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
+                                    }
+
 							<div class="overlay"></div>
 						</a>
 						<div class="text py-3 px-3">
@@ -369,6 +382,11 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
+
+								    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
+                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
+                                    }
+
 							<div class="overlay"></div>
 						</a>
 						<div class="text py-3 px-3">
@@ -440,6 +458,10 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
+								    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
+                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
+                                    }
+
 							    
 							<div class="overlay"></div>
 						</a>
