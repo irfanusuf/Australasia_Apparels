@@ -21,6 +21,8 @@ public class SqlDbContext : DbContext
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<NewsLetter> NewsLetters { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+
 
 
 
@@ -50,12 +52,26 @@ public class SqlDbContext : DbContext
 
 
 
-               modelBuilder.Entity<Order>()
-                         .HasOne(o => o.Address)
-                         .WithMany(a => a.Orders) // ✅ No navigation property on Address, or use WithMany(a => a.Orders)
-                         .HasForeignKey(o => o.AddressId)
-                        .OnDelete(DeleteBehavior.NoAction);
+                modelBuilder.Entity<Order>()
+                          .HasOne(o => o.Address)
+                          .WithMany(a => a.Orders) // ✅ No navigation property on Address, or use WithMany(a => a.Orders)
+                          .HasForeignKey(o => o.AddressId)
+                         .OnDelete(DeleteBehavior.NoAction);
 
+
+
+                modelBuilder.Entity<Review>()
+                        .HasOne(r => r.Product)
+                        .WithMany(p => p.Reviews)
+                        .HasForeignKey(r => r.ProductId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+
+                modelBuilder.Entity<Review>()
+                        .HasOne(r => r.User)
+                        .WithMany(u => u.Reviews)
+                        .HasForeignKey(r => r.UserId)
+                        .OnDelete(DeleteBehavior.Restrict);
 
 
 

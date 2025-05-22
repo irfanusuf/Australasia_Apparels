@@ -46,6 +46,16 @@
                     </p>
                 </div>
 
+
+                @if (!string.IsNullOrWhiteSpace(Model?.Product?.ReasonForDiscount))
+                {
+                    <span class="badge rounded-pill bg-primary text-dark px-3 py-2" style="font-size: 1rem;">
+                        @Model.Product.ReasonForDiscount
+                    </span>
+                }
+
+
+
                 <div class="pricing">
                     <p class="price">
                         <span class="mr-2 price-dc text-muted" style="text-decoration: line-through;">
@@ -53,17 +63,26 @@
                         </span>
                         <span class="price-sale">
                             $@((Model?.Product?.Price != null && Model?.Product?.Discount != null)
-                                ? (Model.Product.Price - (Model.Product.Price * Model.Product.Discount / 100)).ToString("0.00")
-                                : "0.00")
+                                                        ? (Model.Product.Price - (Model.Product.Price * Model.Product.Discount /
+                                                        100)).ToString("0.00")
+                                                        : "0.00")
                         </span>
+
+
                     </p>
+
+
+
+
+
                 </div>
 
-                <p class="text-dark" >@Model?.Product?.Description</p>
+                <p class="text-dark">@Model?.Product?.Description</p>
 
-                <form method="post" asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@Model?.Product?.ProductId">
+                <form method="post" asp-controller="Product" asp-action="AddToCart"
+                    asp-route-ProductId="@Model?.Product?.ProductId">
                     <div class="row mt-4">
-                        
+
                         <div class="col-md-6">
                             <div class="form-group d-flex">
                                 <div class="select-wrap">
@@ -71,9 +90,9 @@
                                     @{
                                         var SizeString = Model?.Product?.Size ?? "";
                                         var SizeList = SizeString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                                                 .Select(c => c.Trim())
-                                                                 .Where(c => !string.IsNullOrWhiteSpace(c))
-                                                                 .ToList();
+                                        .Select(c => c.Trim())
+                                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                                        .ToList();
                                     }
                                     <select name="Size" class="form-control">
                                         <option value="">Select Size</option>
@@ -93,9 +112,9 @@
                                     @{
                                         var colorString = Model?.Product?.Color ?? "";
                                         var colorList = colorString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                                                   .Select(c => c.Trim())
-                                                                   .Where(c => !string.IsNullOrWhiteSpace(c))
-                                                                   .ToList();
+                                        .Select(c => c.Trim())
+                                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                                        .ToList();
                                     }
                                     <select name="Color" class="form-control">
                                         <option value="">Select Color</option>
@@ -114,7 +133,8 @@
                                     <i class="ion-ios-remove"></i>
                                 </button>
                             </span>
-                            <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="10" readonly />
+                            <input type="number" id="quantity" name="quantity" class="form-control input-number"
+                                value="1" min="1" max="10" readonly />
                             <span class="input-group-btn ml-2">
                                 <button type="button" class="quantity-right-plus btn">
                                     <i class="ion-ios-add"></i>
@@ -139,7 +159,8 @@
         <div class="row mt-4">
             <div class="col-md-12">
                 <h4>Add a Review</h4>
-                <form asp-controller="Product" asp-action="AddReview" asp-route-ProductId="@Model?.Product?.ProductId" method="post">
+                <form asp-controller="Product" asp-action="AddReview" asp-route-ProductId="@Model?.Product?.ProductId"
+                    method="post">
                     <div class="form-group">
                         <label for="UserName">Your Name</label>
                         <input type="text" class="form-control" id="UserName" name="UserName" required />
@@ -168,11 +189,11 @@
                 <h4>User Reviews</h4>
                 @{
                     var reviews = new List<dynamic>
-                    {
-                        new { UserName = "Aryan", Rating = 5, Comment = "Great product! Highly recommended." },
-                        new { UserName = "Mikail", Rating = 4, Comment = "Good quality, fast shipping." },
-                        new { UserName = "Mehran", Rating = 3, Comment = "Average, but worth the price." }
-                    };
+                                {
+                                new { UserName = "Aryan", Rating = 5, Comment = "Great product! Highly recommended." },
+                                new { UserName = "Mikail", Rating = 4, Comment = "Good quality, fast shipping." },
+                                new { UserName = "Mehran", Rating = 3, Comment = "Average, but worth the price." }
+                                };
 
                     if (reviews.Any())
                     {

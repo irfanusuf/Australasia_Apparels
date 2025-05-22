@@ -35,7 +35,8 @@ namespace P2WebMVC.Controllers
 
             var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
-            if (user?.Role != Role.Admin)
+
+            if (user?.Role == Role.User)
             {
                 return RedirectToAction("Login", "User");
             }
@@ -51,26 +52,53 @@ namespace P2WebMVC.Controllers
             ViewBag.TotalOrders = ordersCount;
             ViewBag.TotalProducts = productsCount;
             ViewBag.TotalRevenue = totalRevenue;
-            ViewBag.Username = user.Username;
+            ViewBag.Username = user?.Username;
 
 
             return View();
         }
 
+
+        [Authorize]
         [HttpGet]
-        public ActionResult CreateProduct()
+        public async Task<ActionResult> CreateProduct()
         {
+
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+            if (user?.Role == Role.User)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+
             ViewBag.CategoryList = new SelectList(Enum.GetValues(typeof(ProductCategory)));
             // ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> CreateProduct(Product product, IFormFile ImageFile)
         {
 
             try
             {
+
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+
                 ViewBag.SizeList = new SelectList(Enum.GetValues(typeof(ProductSize)));
                 ViewBag.CategoryList = new SelectList(Enum.GetValues(typeof(ProductCategory)));
 
@@ -115,11 +143,24 @@ namespace P2WebMVC.Controllers
 
         }
 
+        [Authorize]
+
         [HttpGet]
         public async Task<ActionResult> ProductList()
         {
             try
             {
+
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+
                 var products = await dbContext.Products.ToListAsync();
 
                 var viewModel = new ProductViewModel
@@ -152,9 +193,22 @@ namespace P2WebMVC.Controllers
 
         }
 
+        [Authorize]
+
         [HttpGet]
         public async Task<ActionResult> DeleteProduct(Guid ProductId)
         {
+
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+            if (user?.Role == Role.User)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
 
             var product = await dbContext.Products.FindAsync(ProductId);
             if (product == null)
@@ -176,10 +230,24 @@ namespace P2WebMVC.Controllers
         }
 
 
+        [Authorize]
+
 
         [HttpGet]
         public async Task<ActionResult> EditProduct(Guid ProductId)
         {
+
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+            if (user?.Role == Role.User)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+
             var product = await dbContext.Products.FindAsync(ProductId);
 
 
@@ -189,9 +257,24 @@ namespace P2WebMVC.Controllers
 
 
 
+        [Authorize]
+
         [HttpPost]
         public async Task<ActionResult> EditProduct(Product model, Guid ProductId)
         {
+
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+            if (user?.Role == Role.User)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+
+
             var product = await dbContext.Products.FindAsync(ProductId);
             if (product == null)
             {
@@ -219,11 +302,25 @@ namespace P2WebMVC.Controllers
 
 
 
+        [Authorize]
+
         [HttpGet]
         public async Task<ActionResult> OrderList()
         {
             try
             {
+
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+
                 var orders = await dbContext.Orders.Include(o => o.Address).ToListAsync();
 
                 var viewModel = new OrderViewModel
@@ -241,12 +338,28 @@ namespace P2WebMVC.Controllers
 
         }
 
+
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> UserDb()
         {
 
             try
             {
+
+
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+                var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+
+                if (user?.Role == Role.User)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+
                 var users = await dbContext.Users
                     .Include(u => u.Orders)
                     .Include(u => u.Cart)
@@ -270,34 +383,55 @@ namespace P2WebMVC.Controllers
 
 
 
+        [Authorize]
+
         [HttpPost]
         public async Task<IActionResult> AddRemoveStoreKeeper(string Email)
         {
+
+
+            Guid? userId = HttpContext.Items["UserId"] as Guid?;
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user?.Role != Role.Admin)
+            {
+                TempData["ErrorMessage"] = "Only Admin can Add/Remove shopkeeper ";
+                 return RedirectToAction("UserDb");
+
+            }
+
+
             if (string.IsNullOrWhiteSpace(Email))
             {
-            TempData["ErrorMessage"] = "Email is required.";
-            return RedirectToAction("UserDb");
+                TempData["ErrorMessage"] = "Email is required.";
+                return RedirectToAction("UserDb");
             }
 
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == Email);
-            if (user == null)
+            var storeKeeper = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == Email);
+
+            if (storeKeeper == null)
             {
-            TempData["ErrorMessage"] = "User not found.";
-            return RedirectToAction("UserDb");
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("UserDb");
             }
 
-            if (user.Role == Role.StoreKeeper)
+            if (storeKeeper.Role == Role.StoreKeeper)
             {
-            user.Role = Role.User;
-            TempData["SuccessMessage"] = "Store Keeper role removed from user.";
+                storeKeeper.Role = Role.User;
+                TempData["SuccessMessage"] = $"Store Keeper {storeKeeper.Username} Removed!";
             }
-            else
+            else if (storeKeeper.Role == Role.User)
             {
-            user.Role = Role.StoreKeeper;
-            TempData["SuccessMessage"] = "User promoted to Store Keeper.";
+                storeKeeper.Role = Role.StoreKeeper;
+                TempData["SuccessMessage"] = $"{storeKeeper.Username} promoted to Store Keeper.";
+            }
+            else if (storeKeeper.Role == Role.Admin)
+            {
+                TempData["SuccessMessage"] = "Admin already has store keeper rights";
             }
 
-            user.DateModified = DateTime.UtcNow;
+            storeKeeper.DateModified = DateTime.UtcNow;
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction("UserDb");

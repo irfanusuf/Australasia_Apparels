@@ -24,6 +24,7 @@ public class User
     public Address? Address { get; set; }
     public Cart? Cart { get; set; }
     public ICollection<Order> Orders { get; set; } = [];
+    public ICollection<Review> Reviews { get; set; } = [];
 
 
     
