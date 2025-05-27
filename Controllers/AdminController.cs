@@ -226,8 +226,18 @@ namespace P2WebMVC.Controllers
                 return NotFound();
             }
 
-            product.IsActive = false;
-            product.IsDeleted = true;
+
+            if (product.IsActive == true && product.IsDeleted == false)
+            {
+                product.IsActive = false;
+                product.IsDeleted = true;
+            }
+            else
+            {
+                product.IsActive = true;
+                product.IsDeleted = false; 
+            }
+
 
             product.UpdatedAt = DateTime.UtcNow;
 
