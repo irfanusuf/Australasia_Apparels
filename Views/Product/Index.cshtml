@@ -27,74 +27,83 @@
 
         <div class="row">
             <div class="col-md-8 col-lg-10 order-md-last">
+
                 <div class="row">
 
-                    @foreach (var product in Model.Products)
-                    {
-
-                        <div class="col-sm-6 col-md-6 col-lg-4 ftco-animate" >
-
-                            <div class="product" >
-                                <a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId" class="img-prod"><img class="img-fluid" src="@product.ImageUrl"
-                                        alt="Colorlib Template">
-                                    <span class="status">@product.Discount.ToString("0") % off</span>
-                                    
-                                    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
-                                        <span class="status" style="transform: translateX(110px);">@product.ReasonForDiscount</span>
-                                    }
-                                  
-                                    <div class="overlay"></div>
-                                </a>
-                                <div class="text py-3 px-3">
-                                    <h3><a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
-                                    <div class="d-flex">
-
-                                        <div class="pricing">
-                                            <p class="price">
-                                            <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
-                                            <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString("0.00"))</span>
-                                            </p>
-                                        </div>
-                                        <div class="rating">
-                                            <p class="text-right">
-                                                @{
-                                                    var rating = (int)(product?.Rating ?? 0);
-                                                    for (int i = 1; i <= 5; i++)
-                                                    {
-                                                        if (i <= rating)
-                                                        {
-                                                            <a href="#"><span class="ion-ios-star"></span></a>
-                                                        }
-                                                        else
-                                                        {
-                                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                                                        }
-                                                    }
-                                                }
-                                            </p>
-                                         
-                                        </div>
-                                    </div>
-
-
-                                    
-                                    <p class="bottom-area d-flex px-3">
-                                        <a asp-controller="product" asp-action="AddToCart" asp-route-ProductId = "@product?.ProductId" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
-                                                    class="ion-ios-add ml-1"></i></span></a>
-                                        @* <a href="#" class="buy-now text-center py-2">Buy now<span><i
-                                                    class="ion-ios-cart ml-1"></i></span></a> *@
-                                    </p>
-                                </div>
-                            </div>
+                   @if (Model.Products != null && Model.Products.Any())
+{
+    foreach (var product in Model.Products)
+    {
+        <div class="col-sm-6 col-md-6 col-lg-4 ftco-animate">
+            <div class="product">
+                <a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId" class="img-prod">
+                    <img class="img-fluid" src="@product.ImageUrl" alt="Product Image">
+                    <span class="status">@product.Discount.ToString("0") % off</span>
+                    <div class="overlay"></div>
+                </a>
+                <div class="text py-3 px-3">
+                    <h3>
+                        <a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId">@product.Name</a>
+                    </h3>
+                    <div class="d-flex">
+                        <div class="pricing">
+                            <p class="price">
+                                <span class="mr-2 price-dc">$@product.Price.ToString("0")</span>
+                                <span class="price-sale">
+                                    $@(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString("0.00"))
+                                </span>
+                            </p>
                         </div>
+                        <div class="rating">
+                            <p class="text-right">
+                                @{
+                                    var rating = (int)(product?.Rating ?? 0);
+                                    for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= rating)
+                                        {
+                                            <a href="#"><span class="ion-ios-star"></span></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                        }
+                                    }
+                                }
+                            </p>
+                        </div>
+                    </div>
 
+                    <div>
+                        @if (!string.IsNullOrEmpty(product?.ReasonForDiscount))
+                        {
+                            <span class="text-danger">@product.ReasonForDiscount !</span>
+                        }
+                    </div>
 
+                    <p class="bottom-area d-flex px-3">
+                        <a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId" class="add-to-cart text-center py-2 mr-1">
+                            <span>Add to cart <i class="ion-ios-add ml-1"></i></span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="col-12 text-center">
+        <h4>No products found.</h4>
+    </div>
+}
 
-                    }
 
                 </div>
 
 
+
+                @if(Model.Products.Count > 50){
 
                 <div class="row mt-5">
                     <div class="col text-center">
@@ -112,8 +121,14 @@
                     </div>
                 </div>
 
+                }
+
+
 
             </div>
+
+
+
 
             <div class="col-md-4 col-lg-2 sidebar">
 
@@ -122,18 +137,20 @@
                     <div class="sidebar-box-2">
                         <h2 class="heading mb-4"><a href="#">Men</a></h2>
                         <ul>
-                            <li><a href="#">T-Shirts &amp; Polos</a></li>
-                            <li><a href="#">Shirts</a></li>
-                            <li><a href="#">Hoodies &amp; Sweatshirts</a></li>
-                            <li><a href="#">Jackets &amp; Coats</a></li>
-                            <li><a href="#">Suits &amp; Blazers</a></li>
-                            <li><a href="#">Jeans</a></li>
-                            <li><a href="#">Trousers &amp; Chinos</a></li>
-                            <li><a href="#">Shorts</a></li>
-                            <li><a href="#">Activewear</a></li>
-                            <li><a href="#">Underwear &amp; Socks</a></li>
-                            <li><a href="#">Men Accessories</a></li>
-                            <li><a href="#">Shoes</a></li>
+                    <li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="T-Shirts & Polos">T-Shirts &amp; Polos</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Shirts">Shirts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Hoodies & Sweatshirts">Hoodies &amp; Sweatshirts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Jackets & Coats">Jackets &amp; Coats</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Suits & Blazers">Suits &amp; Blazers</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Jeans">Jeans</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Trousers & Chinos">Trousers &amp; Chinos</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Shorts">Shorts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Activewear">Activewear</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Underwear & Socks">Underwear &amp; Socks</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Men Accessories">Men Accessories</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Men" asp-route-SubCategory="Shoes">Shoes</a></li>
+
+
                         </ul>
                     </div>
                 }
@@ -144,18 +161,19 @@
                     <div class="sidebar-box-2">
                         <h2 class="heading mb-4"><a href="#">Women</a></h2>
                         <ul>
-                            <li><a href="#">Tops</a></li>
-                            <li><a href="#">Skirts</a></li>
-                            <li><a href="#">Jeans</a></li>
-                            <li><a href="#">Trousers &amp; Pants</a></li>
-                            <li><a href="#">Shorts</a></li>
-                            <li><a href="#">Jumpsuits &amp; Rompers</a></li>
-                            <li><a href="#">Jackets &amp; Coats</a></li>
-                            <li><a href="#">Sweaters &amp; Cardigans</a></li>
-                            <li><a href="#">Activewear</a></li>
-                            <li><a href="#">Sleepwear</a></li>
-                            <li><a href="#">Women Accessories</a></li>
-                            <li><a href="#">Shoes</a></li>
+                           <li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Tops">Tops</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Skirts">Skirts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Jeans">Jeans</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Trousers & Pants">Trousers &amp; Pants</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Shorts">Shorts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Jumpsuits & Rompers">Jumpsuits &amp; Rompers</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Jackets & Coats">Jackets &amp; Coats</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Sweaters & Cardigans">Sweaters &amp; Cardigans</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Activewear">Activewear</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Sleepwear">Sleepwear</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Women Accessories">Women Accessories</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Women" asp-route-SubCategory="Shoes">Shoes</a></li>
+
                         </ul>
                     </div>
 
@@ -168,16 +186,17 @@
                     <div class="sidebar-box-2">
                         <h2 class="heading mb-2"><a href="#">Accessories</a></h2>
                         <ul>
-                            <li><a href="#">Hats &amp; Caps</a></li>
-                            <li><a href="#">Scarves &amp; Wraps</a></li>
-                            <li><a href="#">Belts</a></li>
-                            <li><a href="#">Sunglasses</a></li>
-                            <li><a href="#">Watches</a></li>
-                            <li><a href="#">Jewelry</a></li>
-                            <li><a href="#">Bags &amp; Purses</a></li>
-                            <li><a href="#">Wallets</a></li>
-                            <li><a href="#">Gloves</a></li>
-                            <li><a href="#">Hair Accessories</a></li>
+                           <li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Hats & Caps">Hats &amp; Caps</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Scarves & Wraps">Scarves &amp; Wraps</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Belts">Belts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Sunglasses">Sunglasses</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Watches">Watches</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Jewelry">Jewelry</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Bags & Purses">Bags &amp; Purses</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Wallets">Wallets</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Gloves">Gloves</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Accessories" asp-route-SubCategory="Hair Accessories">Hair Accessories</a></li>
+
                         </ul>
                     </div>
 
@@ -189,16 +208,17 @@
                     <div class="sidebar-box-2">
                         <h2 class="heading mb-2"><a href="#">Kids</a></h2>
                         <ul>
-                            <li><a href="#">T-Shirts &amp; Tops</a></li>
-                            <li><a href="#">Dresses &amp; Skirts</a></li>
-                            <li><a href="#">Pants &amp; Shorts</a></li>
-                            <li><a href="#">Jeans</a></li>
-                            <li><a href="#">Jackets &amp; Coats</a></li>
-                            <li><a href="#">Hoodies &amp; Sweatshirts</a></li>
-                            <li><a href="#">Sleepwear</a></li>
-                            <li><a href="#">School Uniforms</a></li>
-                            <li><a href="#">Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
+                          <li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="T-Shirts & Tops">T-Shirts &amp; Tops</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Dresses & Skirts">Dresses &amp; Skirts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Pants & Shorts">Pants &amp; Shorts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Jeans">Jeans</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Jackets & Coats">Jackets &amp; Coats</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Hoodies & Sweatshirts">Hoodies &amp; Sweatshirts</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Sleepwear">Sleepwear</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="School Uniforms">School Uniforms</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Shoes">Shoes</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Kids" asp-route-SubCategory="Accessories">Accessories</a></li>
+
                         </ul>
                     </div>
                 }
@@ -210,12 +230,17 @@
                     <div class="sidebar-box-2">
                         <h2 class="heading mb-4"><a href="#">Shoes</a></h2>
                         <ul>
-                            <li><a href="#">Nike</a></li>
-                            <li><a href="#">Addidas</a></li>
-                            <li><a href="#">Skechers</a></li>
-                            <li><a href="#">Jackets</a></li>
-                            <li><a href="#">Coats</a></li>
-                            <li><a href="#">Jeans</a></li>
+                       <li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Sneakers">Sneakers</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Running Shoes">Running Shoes</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Formal Shoes">Formal Shoes</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Loafers">Loafers</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Sandals">Sandals</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Flip Flops">Flip Flops</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Boots">Boots</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Heels">Heels</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Slippers">Slippers</a></li>
+<li><a asp-controller="Product" asp-action="Index" asp-route-category="Shoes" asp-route-SubCategory="Kids Shoes">Kids Shoes</a></li>
+
                         </ul>
                     </div>
                 }

@@ -113,17 +113,13 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
-
-							   @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
-                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
-                                    }
-
 							<div class="overlay"></div>
 						</a>
 						<div class="text py-3 px-3">
 							<h3><a asp-controller="Product" asp-action="Details"
 									asp-route-ProductId="@product.ProductId">@product.Name</a></h3>
 							<div class="d-flex">
+
 								<div class="pricing">
 									 <p class="price">
                                             <span class="mr-2 price-dc">$ @product.Price.ToString("0")</span>
@@ -149,8 +145,16 @@
 									</p>
 								</div>
 							</div>
+
+							<div>
+								   @if(!string.IsNullOrEmpty(product?.ReasonForDiscount)){
+                                        <span class="text-danger">@product.ReasonForDiscount !</span>
+                                    }
+							</div>
+
+
 							<p class="bottom-area d-flex px-3">
-								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product?.ProductId"
 									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 											class="ion-ios-add ml-1"></i></span></a>
 								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
@@ -164,6 +168,10 @@
 		</div>
 	</div>
 </section>
+
+
+
+@* summer collection *@
 
 <section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
 	<div class="container">
@@ -202,6 +210,9 @@
 		</div>
 	</div>
 </section>
+
+
+
 @* for men  *@
 
 <section class="ftco-section bg-light pt-3 pb-2">
@@ -224,9 +235,7 @@
 						<a asp-controller="Product" asp-action="Details" asp-route-ProductId="@product.ProductId"
 							class="img-prod"><img class="img-fluid" src="@product.ImageUrl" alt="Colorlib Template">
 							     <span class="status">@product.Discount.ToString("0") % off</span>
-								    @if(!string.IsNullOrEmpty(product.ReasonForDiscount)){
-                                        <span class="status" style="transform: translateX(90px);">@product.ReasonForDiscount</span>
-                                    }
+
 
 							<div class="overlay"></div>
 						</a>
@@ -264,11 +273,19 @@
 									
 								</div>
 
-
 							</div>
+
+							<div>
+								   @if(!string.IsNullOrEmpty(product?.ReasonForDiscount)){
+                                        <span class="text-danger">@product.ReasonForDiscount !</span>
+                                    }
+							</div>
+
+
+
 							<p class="bottom-area d-flex px-3">
 								
-								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product?.ProductId"
 									class="add-to-cart text-center py-2 mr-1">
 									<span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
 
@@ -325,6 +342,7 @@
                                             <span class="price-sale">$ @(Math.Round(product.Price - (product.Price * product.Discount / 100), 2).ToString())</span>
                                     </p>
 								</div>
+
 								<div class="rating">
 									<p class="text-right">
 									 @{
@@ -344,8 +362,16 @@
 									</p>
 								</div>
 							</div>
+
+							<div>
+								   @if(!string.IsNullOrEmpty(product?.ReasonForDiscount)){
+                                        <span class="text-danger">@product.ReasonForDiscount !</span>
+                                    }
+							</div>
+
+
 							<p class="bottom-area d-flex px-3">
-								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product?.ProductId"
 									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 											class="ion-ios-add ml-1"></i></span></a>
 								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
@@ -418,8 +444,17 @@
 									</p>
 								</div>
 							</div>
+
+
+							<div>
+								   @if(!string.IsNullOrEmpty(product?.ReasonForDiscount)){
+                                        <span class="text-danger">@product.ReasonForDiscount !</span>
+                                    }
+							</div>
+
+
 							<p class="bottom-area d-flex px-3">
-								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product?.ProductId"
 									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 											class="ion-ios-add ml-1"></i></span></a>
 								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i
@@ -494,8 +529,15 @@
 									</p>
 								</div>
 							</div>
+
+
+							<div>
+								   @if(!string.IsNullOrEmpty(product?.ReasonForDiscount)){
+                                        <span class="text-danger">@product.ReasonForDiscount !</span>
+                                    }
+							</div>
 							<p class="bottom-area d-flex px-3">
-								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product.ProductId"
+								<a asp-controller="Product" asp-action="AddToCart" asp-route-ProductId="@product?.ProductId"
 									class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 											class="ion-ios-add ml-1"></i></span></a>
 								@* <a href="#" class="buy-now text-center py-2">Buy now<span><i

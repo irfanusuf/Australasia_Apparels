@@ -125,7 +125,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var product in Model.Products.Where(p => p.IsDeleted == false && p.IsActive))
+                    @foreach (var product in Model.Products.Where(p => p.IsDeleted == false && p.IsActive == true))
                     {
                         <tr>
 

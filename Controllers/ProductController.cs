@@ -24,49 +24,43 @@ namespace P2WebMVC.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> Index(ProductCategory category)
+        public async Task<ActionResult> Index(ProductCategory category, string SubCategory)
         {
-
             try
             {
-                if (category == ProductCategory.All)
+                // Base query for active products
+                IQueryable<Product> query = dbContext.Products.Where(p => p.IsActive);
+
+                // Apply category filter (skip if "All")
+                if (category != ProductCategory.All)
                 {
-                    var products = await dbContext.Products.Where(p => p.IsActive).ToListAsync();
-
-                    var viewModel = new ProductViewModel
-                    {
-                        Products = products,
-                    };
-
-                    ViewBag.category = category.ToString();
-
-                    return View(viewModel);
-                }
-                else
-                {
-                    var products = await dbContext.Products.Where(p => p.IsActive && p.Category == category).ToListAsync();
-
-                    var viewModel = new ProductViewModel
-                    {
-                        Products = products,
-                    };
-
-                    ViewBag.category = category.ToString();
-
-                    return View(viewModel);
+                    query = query.Where(p => p.Category == category);
                 }
 
+                // Apply subcategory filter if provided
+                if (!string.IsNullOrEmpty(SubCategory))
+                {
+                    query = query.Where(p => p.SubCategory == SubCategory);
+                }
 
+                // Execute query
+                var products = await query.ToListAsync();
+
+                // Prepare view model
+                var viewModel = new ProductViewModel
+                {
+                    Products = products,
+                };
+
+                ViewBag.category = category.ToString();
+                return View(viewModel);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
                 Console.WriteLine(ex.Message);
                 return View("Error");
-                throw;
             }
-            // get all products
-
         }
 
         [HttpGet]
@@ -89,7 +83,7 @@ namespace P2WebMVC.Controllers
             {
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Error");
-          
+
             }
         }
 
@@ -109,7 +103,7 @@ namespace P2WebMVC.Controllers
                 }
 
                 var product = await dbContext.Products.FindAsync(ProductId);
-                
+
                 if (product == null)
                 {
                     ViewBag.ErrorMessage = "Product not found.";
@@ -139,7 +133,7 @@ namespace P2WebMVC.Controllers
                 }
 
                 var existingCartItem = await dbContext
-                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId );
+                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);
 
                 // var existingCartItem = cart.CartItems
                 // .FirstOrDefault(ci => ci.ProductId == ProductId );
@@ -195,7 +189,7 @@ namespace P2WebMVC.Controllers
                 }
 
                 var product = await dbContext.Products.FindAsync(ProductId);
-                
+
                 if (product == null)
                 {
                     ViewBag.ErrorMessage = "Product not found.";
@@ -225,7 +219,7 @@ namespace P2WebMVC.Controllers
                 }
 
                 var existingCartItem = await dbContext
-                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId );
+                    .CartItems.FirstOrDefaultAsync(cp => cp.CartId == cart.CartId && cp.ProductId == ProductId);
 
                 // var existingCartItem = cart.CartItems
                 // .FirstOrDefault(ci => ci.ProductId == ProductId );
@@ -240,7 +234,7 @@ namespace P2WebMVC.Controllers
                         CartId = cart.CartId,
                         ProductId = ProductId,
                         Quantity = 1,
-                        Size =  "Free Size",
+                        Size = "Free Size",
                         Color = "Default"
                     };
 
