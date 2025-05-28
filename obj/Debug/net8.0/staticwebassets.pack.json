@@ -65,6 +65,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/files/Catalog.pdf",
+      "PackagePath": "staticwebassets/files/Catalog.pdf"
+    },
+    {
       "Id": "/home/irfanusuf/Australasia_Apparels/wwwroot/fonts/flaticon/backup.txt",
       "PackagePath": "staticwebassets/fonts/flaticon/backup.txt"
     },

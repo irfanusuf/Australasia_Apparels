@@ -345,15 +345,11 @@ namespace P2WebMVC.Controllers
         }
 
 
-
-
         [HttpGet]
         public ActionResult ForgotPassword()
         {
             return View();
         }
-
-
 
 
         [HttpPost]

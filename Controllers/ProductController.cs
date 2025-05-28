@@ -263,5 +263,54 @@ namespace P2WebMVC.Controllers
 
 
 
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> RemoveFromCart(Guid ProductId)
+        {
+            try
+            {
+                Guid? userId = HttpContext.Items["UserId"] as Guid?;
+                if (userId == null)
+                {
+                    ViewBag.ErrorMessage = "User not logged in.";
+                    return View("Error");
+                }
+
+                var cart = await dbContext.Carts
+                    .Include(c => c.CartItems)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                if (cart == null)
+                {
+                    ViewBag.ErrorMessage = "Cart not found.";
+                    return View("Error");
+                }
+
+                var cartItem = await dbContext.CartItems
+                    .FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == ProductId);
+
+                if (cartItem != null)
+                {
+                    var product = await dbContext.Products.FindAsync(ProductId);
+                    if (product != null)
+                    {
+                        decimal discountedPrice = product.Price - (product.Price * product.Discount / 100);
+                        cart.CartValue -= discountedPrice * cartItem.Quantity;
+                    }
+
+                    dbContext.CartItems.Remove(cartItem);
+                    await dbContext.SaveChangesAsync();
+                }
+
+                return RedirectToAction("Cart", "User");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Error");
+            }
+        }
+
+
     }
 }
